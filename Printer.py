@@ -1,9 +1,6 @@
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtPrintSupport import *
-from escpos.printer import Usb
-from PIL import Image
-import io
 
 
 class Print(object):
