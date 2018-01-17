@@ -15,10 +15,6 @@ class Print(object):
 
     def Print(self, dialog, simplified=None, other=None):
         """Print the passed dialog."""
-        printer = QPrinter(QPrinter.HighResolution)
-        printer.isValid()
-        printer
-        prinfo = QPrinterInfo(printer)
         if simplified:
             printer.setDocName("COMANDA")
         elif other:
