@@ -511,7 +511,17 @@ class Session(QWidget):
                     value = 1
                 setattr(self, key, value)
 
+        db = Db()
+        headerConfig = db.getConfigGroup("TICKET")
+
         data = {
+            "imagen": headerConfig["imagen_ticket"],
+            "titulo": headerConfig["titulo"],
+            "direccion": headerConfig["direccion"],
+            "regimen": headerConfig["regimen_fiscal"],
+            "RFC": headerConfig["RFC"],
+            "nombreFiscal": headerConfig["nombre"],
+            "telLocal": headerConfig["telefono"],
             "folio": self.getID(),
             "nombre": self.nameField.getText(),
             "llevar": self.Llevar,  # Capitalized because different
