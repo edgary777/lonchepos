@@ -114,12 +114,12 @@ class Ticket(QDialog):
         date = QLabel(str(self.date))
         date.setAlignment(Qt.AlignCenter)
         date.setStyleSheet(styleSmall)
-        dateID.addWidget(date, 1, 0)
+        dateID.addWidget(date, 1, 0, 1, 2)
 
-        hour = QLabel(str(self.hour))
-        hour.setAlignment(Qt.AlignCenter)
-        hour.setStyleSheet(styleSmall)
-        dateID.addWidget(hour, 1, 1)
+        # hour = QLabel(str(self.hour))
+        # hour.setAlignment(Qt.AlignCenter)
+        # hour.setStyleSheet(styleSmall)
+        # dateID.addWidget(hour, 1, 1)
 
         header.addLayout(dateID)
 
