@@ -52,6 +52,11 @@ class MultiSession(QWidget):
         self.switchSession(self.activeSession)
         return session
 
+    def kilAll(self):
+        """Delete all sessions."""
+        self.sessions = []
+        self.UpdateUi()
+
     def deleteSession(self, session, index):
         """Delete a session."""
         if session.getID() == self.activeSession:
@@ -335,7 +340,7 @@ class Session(QWidget):
 
     def imgBtns(self):
         """Image buttons generator and layout creator."""
-        names = ["separate", "print", "dcto", "iva", "close"]
+        names = ["separate", "print", "dcto", "iva", "close", "gear"]
         layout = QVBoxLayout()
         for name in names:
             setattr(self, "picBtn" + name,
@@ -344,11 +349,6 @@ class Session(QWidget):
                                       "Resources/c-" + name, self))
             layout.addWidget(getattr(self, "picBtn" + name))
         layout.addStretch()
-        self.picBtngear = Buttons.PicButton("Resources/s-gear",
-                                            "Resources/h-gear",
-                                            "Resources/c-gear",
-                                            self)
-        layout.addWidget(self.picBtngear)
 
         self.picBtnseparate.clicked.connect(self.separateItems)
 
@@ -360,8 +360,15 @@ class Session(QWidget):
 
         self.picBtnclose.clicked.connect(lambda:
                                          self.holder.getOrder().clean())
+        self.picBtngear.clicked.connect(self.settingsD)
 
         return layout
+
+    def settingsD(self):
+        """Show settings dialog."""
+        dialog = Dialogs.IODialog(self)
+        if dialog.exec_():
+            self.parent.kilAll()
 
     def pay(self):
         """Print, record, and delete order."""
@@ -372,7 +379,7 @@ class Session(QWidget):
                 pass
 
     def toggleLleva(self):
-        """Print, record, and delete order."""
+        """Toggle lleva option."""
         if self.llevar is None:
             self.llevar = False
 
@@ -384,7 +391,7 @@ class Session(QWidget):
             self.llevaBtn.setText("LLEVAR")
 
     def toggleNp(self):
-        """Print, record, and delete order."""
+        """Toggle no option."""
         if self.np is None:
             self.np = False
 
