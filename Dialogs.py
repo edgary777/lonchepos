@@ -2,6 +2,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
+import DbIO
+
 
 class DctDialog(QDialog):
     """Pop-Up window to set a discount for an order."""
@@ -434,3 +436,58 @@ class QuestionDialog(QDialog):
         layout.addLayout(btnLayout)
 
         self.setLayout(layout)
+
+
+class IODialog(QDialog):
+    """Dialog to import or export the databases."""
+
+    def __init__(self, parent):
+        """Init."""
+        super().__init__(parent, Qt.FramelessWindowHint |
+                         Qt.WindowSystemMenuHint)
+
+        self.db = DbIO.DbIo(self)
+        self.initUi()
+
+    def initUi(self):
+        """Ui Setup."""
+        style = """
+        QPushButton {
+            font-family: Asap;
+            font-weight: bold;
+            font-size: 20pt;
+        }
+        QLabel {
+            font-family: Asap;
+            font-weight: bold;
+            font-size: 45pt;
+        }"""
+
+        btnExport = QPushButton("Exportar")
+        btnExport.setStyleSheet(style)
+        btnExport.clicked.connect(self.eDb)
+
+        btnImport = QPushButton("Importar")
+        btnImport.setStyleSheet(style)
+        btnImport.clicked.connect(self.iDb)
+
+        btnCancel = QPushButton("Cancelar")
+        btnCancel.setStyleSheet(style)
+        btnCancel.clicked.connect(self.reject)
+
+        layout = QVBoxLayout()
+        layout.addWidget(btnExport)
+        layout.addWidget(btnImport)
+        layout.addWidget(btnCancel)
+
+        self.setLayout(layout)
+
+    def iDb(self):
+        """Import a database and refresh."""
+        self.db.importDb()
+        self.accept()
+
+    def eDb(self):
+        """Export all databases."""
+        self.db.exportDb()
+        self.reject()
