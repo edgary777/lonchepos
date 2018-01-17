@@ -8,11 +8,10 @@ import Db
 class DbIo(QWidget):
     """Import/Export the database To/From a CSV file."""
 
-    def __init__(self, database, parent):
+    def __init__(self, parent):
         """Init."""
         super().__init__(parent)
 
-        self.database = database
 
     def exportDb(self):
         """Export the database tables to CSV files."""
@@ -23,7 +22,7 @@ class DbIo(QWidget):
                                QFileDialog.DontResolveSymlinks)
 
         db = Db.Db()
-        tables = ["tickets", "ticketProducts", "productos", "cupones"
+        tables = ["tickets", "ticketProducts", "productos", "cupones",
                   "categorias", "configuraciones"]
 
         for table in tables:
@@ -38,7 +37,7 @@ class DbIo(QWidget):
 
     def importDb(self):
         """Import database table from csv file."""
-        dataBases = ["categorias", "configuraciones", "productos", "cupones"
+        dataBases = ["categorias", "configuraciones", "productos", "cupones",
                      "ticketProducts", "tickets"]
         caption = "Selecciona la base de datos que quieres actualizar"
         fileName = QFileDialog.getOpenFileName(parent=self, caption=caption,
@@ -62,11 +61,11 @@ class DbIo(QWidget):
         db.overwriteTable(table, rows)
 
 
-x = True
-
-if x:
-    app = QApplication(sys.argv)
-    v = DbIo("database.db", None)
-    # v.exportDb()
-    v.importDb()
-    sys.exit(app.exec_())
+# x = True
+#
+# if x:
+#     app = QApplication(sys.argv)
+#     v = DbIo("database.db", None)
+#     # v.exportDb()
+#     v.importDb()
+#     sys.exit(app.exec_())
