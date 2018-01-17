@@ -62,7 +62,7 @@ class Ticket(QDialog):
             label = QLabel()
             image = QPixmap(self.image)
 
-            label.setPixmap(image.scaledToWidth(self.width() - 20, Qt.FastTransformation))
+            label.setPixmap(image.scaledToWidth(self.width() - 60, Qt.FastTransformation))
             label.setMargin(0)
             label.setAlignment(Qt.AlignCenter)
 
