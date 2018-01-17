@@ -68,7 +68,7 @@ class Db(object):
 
         cursor = connection.cursor()
 
-        query = """SELECT MAX(folio) FROM tickets"""
+        query = """SELECT MAX(folio) FROM tickets;"""
         cursor.execute(query)
         folio = cursor.fetchone()
 
@@ -86,7 +86,7 @@ class Db(object):
 
         cursor = connection.cursor()
 
-        query = "SELECT * FROM tickets WHERE id = {}".format(product)
+        query = "SELECT * FROM tickets WHERE id = {};".format(product)
         cursor.execute(query)
         product = cursor.fetchone()
 
@@ -102,7 +102,7 @@ class Db(object):
 
         cat = "'" + cat + "'"  # formatting category for sql query
 
-        query = "SELECT * FROM productos WHERE categoria = {}".format(cat)
+        query = "SELECT * FROM productos WHERE categoria = {};".format(cat)
         cursor.execute(query)
         products = cursor.fetchall()
 
@@ -117,7 +117,7 @@ class Db(object):
 
         cursor = connection.cursor()
 
-        query = """SELECT * FROM categorias"""
+        query = """SELECT * FROM categorias;"""
         cursor.execute(query)
         category = cursor.fetchall()
 
