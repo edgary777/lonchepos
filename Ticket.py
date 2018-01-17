@@ -332,14 +332,14 @@ class Ticket(QDialog):
         folio.setAlignment(Qt.AlignCenter)
         folio.setStyleSheet(style)
 
-        if self.status is True:
+        if self.status == 0:
             np = QLabel("P")
         else:
             np = QLabel("NP")
         np.setAlignment(Qt.AlignCenter)
         np.setStyleSheet(style2)
 
-        if self.status is True:
+        if self.takeOut == 0:
             lleva = QLabel("LL")
         else:
             lleva = QLabel("AQ")

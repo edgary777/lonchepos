@@ -373,26 +373,26 @@ class Session(QWidget):
 
     def toggleLleva(self):
         """Print, record, and delete order."""
-        if self.llevar is False or self.llevar is True:
-            self.llevar = not self.llevar
-        else:
+        if self.llevar is None:
             self.llevar = False
 
         if self.llevar is False:
+            self.llevar = True
             self.llevaBtn.setText("AQUI")
         else:
+            self.llevar = False
             self.llevaBtn.setText("LLEVAR")
 
     def toggleNp(self):
         """Print, record, and delete order."""
-        if self.np is False or self.np is True:
-            self.np = not self.np
-        else:
+        if self.np is None:
             self.np = False
 
         if self.np is False:
+            self.np = True
             self.npBtn.setText("NP")
         else:
+            self.np = False
             self.npBtn.setText("PAG")
 
     def getSex(self):
