@@ -1,4 +1,5 @@
 import sys
+import textwrap
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -48,6 +49,7 @@ class Ticket(QDialog):
         footer = self.simplifiedFooter()
 
         layout.addSpacing(100)
+        layout.addLayout(header)
         layout.addLayout(content)
         layout.addLayout(footer)
 
@@ -227,11 +229,14 @@ class Ticket(QDialog):
             header.addWidget(line)
 
         if self.notes:
-            notas = QLabel(str(self.notes))
-            notas.setWordWrap(True)
-            notas.setAlignment(Qt.AlignCenter)
-            notas.setStyleSheet(style)
-            header.addWidget(notas)
+            notes = textwrap.wrap(str(self.notes), 17)
+            x = 0
+            for linea in notes:
+                setattr(self, "line" + str(x), QLabel(str(linea)))
+                getattr(self, "line" + str(x)).setAlignment(Qt.AlignCenter)
+                getattr(self, "line" + str(x)).setStyleSheet(style)
+                header.addWidget(getattr(self, "line" + str(x)))
+                x += 1
 
         if self.nombre or self.notes:
             return header
