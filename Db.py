@@ -36,6 +36,7 @@ class Db(object):
         telefono = "'" + str(data["telefono"]) + "'"
         email = "'" + str(data["email"]) + "'"
         nombref = "'" + str(data["nombre2"]) + "'"
+        uso = "'" + str(data["uso"]) + "'"
 
         productos = data["productos"]
 
@@ -46,7 +47,7 @@ class Db(object):
                                            subtotal, iva, descuento,
                                            descuentop, descuentoa, cupon, paga,
                                            cambio, cancelado, fecha, hora, rfc,
-                                           telefono, email, nombref)
+                                           telefono, email, nombref, uso)
         cursor.execute(query)
 
         for product in productos:
@@ -201,7 +202,8 @@ class Db(object):
                     iva FLOAT, descuento FLOAT, descuentoa FLOAT,
                     descuentop FLOAT, cupon TEXT, paga INT, cambio INT,
                     cancelado INT, fecha DATE, hora TIME, rfc TEXT,
-                    telefono VARCHAR, email VARCHAR, nombref TEXT);"""
+                    telefono VARCHAR, email VARCHAR, nombref TEXT,
+                    uso TEXT);"""
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS ticketProducts(folio INTEGER,

@@ -536,6 +536,7 @@ class Session(QWidget):
             "rfc": "SOVE920621",
             "telefono": "8717823328",
             "email": "edgar21dejunio@gmail.com",
-            "nombre2": "EDGAR SOLIS VIZCARRA"
+            "nombre2": "EDGAR SOLIS VIZCARRA",
+            "uso": "por definir"
         }
         return data
