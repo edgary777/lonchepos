@@ -48,7 +48,7 @@ class Ticket(QDialog):
         content = self.simplifiedContent()
         footer = self.simplifiedFooter()
 
-        layout.addSpacing(100)
+        layout.addSpacing(50)
         layout.addLayout(header)
         layout.addLayout(content)
         layout.addLayout(footer)
@@ -211,7 +211,7 @@ class Ticket(QDialog):
         QLabel {
             color: black;
             font-weight: bold;
-            font-size: 20pt;
+            font-size: 17pt;
             font-family: Asap;
         };"""
 
