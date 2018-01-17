@@ -154,6 +154,42 @@ class Db(object):
 
         return items
 
+    def overwriteTable(self, table, data):
+        """Clean table and fil with new data."""
+        connection = sqlite3.connect(self.database)
+        cursor = connection.cursor()
+
+        query = "DELETE FROM {}".format(table)
+        cursor.execute(query)
+
+        del data[0]
+
+        rows = []
+        for item in data:
+            row = []
+            for col in item:
+                try:
+                    col = float(col)
+                except ValueError:
+                    pass
+                finally:
+                    if isinstance(col, float):
+                        if col % 1 == 0:
+                            col = int(col)
+                row.append(col)
+            rows.append(row)
+
+        for row in rows:
+            valstr = "?"
+            if len(row)> 1:
+                for val in range((len(row) - 1)):
+                    valstr += ", ?"
+            query = "INSERT INTO {} VALUES({});".format(table, valstr)
+            cursor.execute(query, row)
+
+        connection.commit()
+        connection.close()
+
     def initializer(self):
         """If table not exists create it."""
         connection = sqlite3.connect(self.database)
