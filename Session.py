@@ -372,7 +372,7 @@ class Session(QWidget):
 
     def pay(self):
         """Print, record, and delete order."""
-        if self.llevar is not None:
+        if self.llevar is not None and self.np is not None:
             dialog = Dialogs.PayDialog(self, self.orderTotal.getTotal())
 
             if dialog.exec_():
@@ -450,14 +450,15 @@ class Session(QWidget):
     def printSimplified(self):
         """Simplified ticket printer."""
         if self.orderTotal.getTotal() > 0:
-            self.setTime()
-            ticket = Ticket.Ticket(self.collector(), self, simplified=True)
-            # if ticket.exec_():
-            #     pass
-            printer = Printer.Print()
-            printer.Print(ticket, simplified=True)
-            printer = None
-            ticket.setParent(None)
+            if self.llevar is not None and self.np is not None:
+                self.setTime()
+                ticket = Ticket.Ticket(self.collector(), self, simplified=True)
+                # if ticket.exec_():
+                #     pass
+                printer = Printer.Print()
+                printer.Print(ticket, simplified=True)
+                printer = None
+                ticket.setParent(None)
 
     def separateItems(self):
         """Toggle and update discount."""
