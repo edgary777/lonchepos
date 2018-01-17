@@ -354,26 +354,26 @@ class Ticket(QDialog):
 
     def parseData(self, data):
         """Parse and organize the data for the ticket."""
-        self.image = """Resources/logo.png"""
-        self.title = """SUPER LONCHES DE TORREON"""
+        self.image = data["imagen"]
+        self.title = data["titulo"]
 
-        self.address = QLabel("""CUAUHTEMOC 217A SUR, ZONA CENTRO, CP 34000, DURANGO, DURANGO""")
+        self.address = QLabel(data["direccion"])
         self.address.setWordWrap(True)
         self.address.setAlignment(Qt.AlignCenter)
 
-        self.regimenFiscal = QLabel("""REGIMEN DE INCORPORACIÓN FISCAL""")
+        self.regimenFiscal = QLabel(data["regimen"])
         self.regimenFiscal.setWordWrap(True)
         self.regimenFiscal.setAlignment(Qt.AlignCenter)
 
-        self.RFC = QLabel("""VICM6405157F1""")
+        self.RFC = QLabel(data["RFC"])
         self.RFC.setWordWrap(True)
         self.RFC.setAlignment(Qt.AlignCenter)
 
-        self.name = QLabel("""MARICELA VIZCARRA CAMPOS""")
+        self.name = QLabel(data["nombreFiscal"])
         self.name.setWordWrap(True)
         self.name.setAlignment(Qt.AlignCenter)
 
-        self.tel = QLabel("""(618) 829-62-18""")
+        self.tel = QLabel(data["telLocal"])
         self.tel.setWordWrap(True)
         self.tel.setAlignment(Qt.AlignCenter)
 
