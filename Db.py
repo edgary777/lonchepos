@@ -132,7 +132,7 @@ class Db(object):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
 
-        query = """SELECT * FROM {}""".format(table)
+        query = """SELECT * FROM {};""".format(table)
         cursor.execute(query)
         items = cursor.fetchall()
 
@@ -140,6 +140,24 @@ class Db(object):
         connection.close()
 
         return items
+
+    def getConfigGroup(self, group):
+        """Return data for the ticket header."""
+        connection = sqlite3.connect(self.database)
+        cursor = connection.cursor()
+
+        query = """SELECT * FROM configuraciones WHERE grupo='{}';""".format(str(group))
+        cursor.execute(query)
+        items = cursor.fetchall()
+
+        connection.commit()
+        connection.close()
+
+        dic = {}
+        for item in items:
+            dic[item[0]] = item[1]
+
+        return dic
 
     def getTableMeta(self, table):
         """Return table columnt titles."""
