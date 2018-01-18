@@ -2,6 +2,9 @@ import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout
 from PyQt5.QtCore import Qt
 import Session
+import logging
+import os
+import traceback
 
 
 class MainWindow(QWidget):
@@ -28,6 +31,25 @@ class MainWindow(QWidget):
         p.setColor(self.backgroundRole(), Qt.white)
         self.setPalette(p)
 
+
+path = os.path.realpath(__file__)
+# Configure logger to write to a file...
+logging.basicConfig(filename=path + '.log', level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
+logger = logging.getLogger()
+
+
+def my_handler(type, value, tb):
+    """Exception loger format."""
+    tr = traceback.extract_stack(tb)
+    trace = ""
+    for row in tr:
+        trace += str(row) + "\n"
+    logger.exception("""Uncaught exception: {} | value {} | trace: \n{}""".format(str(value), value, trace))
+
+
+# Install exception handler
+sys.excepthook = my_handler
 
 app = QApplication(sys.argv)
 window = MainWindow()
