@@ -274,7 +274,6 @@ class PopOrderWidget(QWidget):
                      font-family: Asap;
                      font-weight: bold;
                      font-size: 25pt;
-                     font-color: white;
                      }
                     QSpinBox {
                      font-family: Asap;
@@ -336,7 +335,6 @@ class PayDialog(QDialog):
                      font-family: Asap;
                      font-weight: bold;
                      font-size: 25pt;
-                     color: white;
                 }
                 QLabel {
                      font-family: Asap;
@@ -543,3 +541,113 @@ class IODialog(QDialog):
         """Export all databases."""
         self.db.exportDb()
         self.reject()
+
+    def paintEvent(self, event):
+        """Set window background color."""
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), Qt.gray)
+        self.setPalette(p)
+
+
+class InvoiceData(QDialog):
+    """Dialog to capture the customer data for the invoice."""
+
+    def __init__(self, rfc, tel, email, name, use, parent):
+        """Init."""
+        super().__init__(parent, Qt.FramelessWindowHint |
+                         Qt.WindowSystemMenuHint)
+        self.parent = parent
+
+        self.rfc = rfc
+        self.tel = tel
+        self.email = email
+        self.name = name
+        self.use = use
+
+        self.initUi()
+
+    def initUi(self):
+        """Ui Setup."""
+        style = """
+                QLineEdit {
+                    border-radius: 20%;
+                    padding-left: 10px;
+                    font-family: Asap;
+                    font-weight: bold;
+                    font-size: 25pt;
+                }
+                QLabel {
+                    font-family: Asap;
+                    font-weight: bold;
+                    font-size: 25pt;
+                    color: white;
+                }
+                QPushButton {
+                    font-family: Asap;
+                    font-weight: bold;
+                    font-size: 20pt;
+                }"""
+
+        data = {"rfc": "RFC", "tel": "Telefono", "email": "Email",
+                "name": "Nombre", "use": "Uso"}
+
+        x = 0
+        inputsLayout = QGridLayout()
+        for key, value in data.items():
+            setattr(self, key + "Input", QLineEdit())
+            # getattr(self, key + "Input").setFixedWidth(150)
+            getattr(self, key + "Input").setStyleSheet(style)
+            if getattr(self, key):
+                getattr(self, key + "Input").setText(str(getattr(self, key)))
+            setattr(self, key + "Label", QLabel(value))
+            getattr(self, key + "Label").setStyleSheet(style)
+            getattr(self, key + "Label").setAlignment(Qt.AlignRight)
+            inputsLayout.addWidget(getattr(self, key + "Label"), x, 0)
+            inputsLayout.addWidget(getattr(self, key + "Input"), x, 1)
+            x += 1
+
+        btnOk = QPushButton("Aceptar")
+        btnOk.clicked.connect(self.acceptMe)
+        btnOk.setStyleSheet(style)
+        btnCancel = QPushButton("Cancelar")
+        btnCancel.clicked.connect(self.reject)
+        btnCancel.setStyleSheet(style)
+
+        btnLayout = QHBoxLayout()
+        btnLayout.addWidget(btnOk)
+        btnLayout.addWidget(btnCancel)
+
+        layout = QVBoxLayout()
+        layout.addLayout(inputsLayout)
+        layout.addLayout(btnLayout)
+
+        self.setLayout(layout)
+
+    def verify(self):
+        """Verify all fields are filled."""
+        data = ["rfc", "tel", "email", "name", "use"]
+        state = False
+        for item in data:
+            if getattr(self, item + "Input").text() != "":
+                state = True
+            else:
+                return False
+        return state
+
+    def acceptMe(self):
+        """Accept dialog and store values."""
+        if self.verify() is True:
+            self.parent.invoiceRfc = self.rfcInput.text()
+            self.parent.invoiceTel = self.telInput.text()
+            self.parent.invoiceEmail = self.emailInput.text()
+            self.parent.invoiceName = self.nameInput.text()
+            self.parent.invoiceUse = self.useInput.text()
+            self.accept()
+
+    def paintEvent(self, event):
+        """Set window background color."""
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), Qt.gray)
+        self.setPalette(p)

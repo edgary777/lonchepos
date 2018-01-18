@@ -34,11 +34,11 @@ class Db(object):
         cancelado = data["cancelado"]
         fecha = "'" + str(data["fecha"]) + "'"
         hora = "'" + str(data["hora"]) + "'"
-        rfc = "'" + data["rfc"] + "'"
-        telefono = "'" + str(data["telefono"]) + "'"
-        email = "'" + str(data["email"]) + "'"
-        nombref = "'" + str(data["nombre2"]) + "'"
-        uso = "'" + str(data["uso"]) + "'"
+        rfc = "'" + data["facRfc"] + "'"
+        telefono = "'" + str(data["facTelefono"]) + "'"
+        email = "'" + str(data["facEmail"]) + "'"
+        nombref = "'" + str(data["facNombre"]) + "'"
+        uso = "'" + str(data["facUso"]) + "'"
 
         productos = data["productos"]
 

@@ -196,6 +196,12 @@ class Session(QWidget):
         self.sexo = 0
         self.edad = 0
 
+        self.invoiceRfc = None
+        self.invoiceTel = None
+        self.invoiceEmail = None
+        self.invoiceName = None
+        self.invoiceUse = None
+
         self.cancelado = 0
 
         self.ID = None
@@ -366,19 +372,44 @@ class Session(QWidget):
             layout.addWidget(getattr(self, "picBtn" + name))
         layout.addStretch()
 
-        self.picBtnseparate.clicked.connect(self.separateItems)
+        # self.picBtnseparate.clicked.connect(self.separateItems)
+        self.picBtnseparate.setActionL(self.separateItems)
 
-        self.picBtnprint.clicked.connect(self.printSimplified)
+        # self.picBtnprint.clicked.connect(self.printSimplified)
+        self.picBtnprint.setActionL(self.printSimplified)
 
-        self.picBtndcto.clicked.connect(self.setDcto)
+        # self.picBtndcto.clicked.connect(self.setDcto)
+        self.picBtndcto.setActionL(self.setDcto)
 
-        self.picBtniva.clicked.connect(lambda: self.orderTotal.toggleTax())
+        # self.picBtniva.clicked.connect(lambda: self.orderTotal.toggleTax())
+        # self.picBtniva.clicked.connect(self.test)
+        self.picBtniva.setActionL(self.taxToggler)
+        self.picBtniva.setActionR(self.invoiceD)
 
-        self.picBtnclose.clicked.connect(lambda:
-                                         self.holder.getOrder().clean())
-        self.picBtngear.clicked.connect(self.settingsD)
+        # self.picBtnclose.clicked.connect(lambda:
+        #                                  self.holder.getOrder().clean())
+        self.picBtnclose.setActionL(self.orderCleaner)
+
+        # self.picBtngear.clicked.connect(self.settingsD)
+        self.picBtngear.setActionL(self.settingsD)
 
         return layout
+
+    def taxToggler(self):
+        """Toggle tax state."""
+        self.orderTotal.toggleTax()
+
+    def orderCleaner(self):
+        """Toggle tax state."""
+        self.holder.getOrder().clean()
+
+    def invoiceD(self):
+        """Test."""
+        dialog = Dialogs.InvoiceData(self.invoiceRfc, self.invoiceTel,
+                                     self.invoiceEmail, self.invoiceName,
+                                     self.invoiceUse, self)
+        if dialog.exec_():
+            pass
 
     def settingsD(self):
         """Show settings dialog."""
@@ -562,10 +593,10 @@ class Session(QWidget):
             "productos": self.holder.getOrder().getItems(),
             "fecha": self.date,
             "hora": self.hour,
-            "rfc": "SOVE920621",
-            "telefono": "8717823328",
-            "email": "edgar21dejunio@gmail.com",
-            "nombre2": "EDGAR SOLIS VIZCARRA",
-            "uso": "por definir"
+            "facRfc": self.invoiceRfc,
+            "facTelefono": self.invoiceTel,
+            "facEmail": self.invoiceEmail,
+            "facNombre": self.invoiceName,
+            "facUso": self.invoiceUse
         }
         return data
