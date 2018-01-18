@@ -306,11 +306,11 @@ class Session(QWidget):
         sexAgeLayout.addStretch()
 
         for category in categories:
-            products = dBa.getProducts(category[0])
-            setattr(self, "menu" + category[0], Menu.Menu(products,
-                    category[1], self, hold=self.holder))
-            itemsLayout.addWidget(getattr(self, "menu" + category[0]))
-            tabs[category[0]] = (x, itemsLayout)
+            products = dBa.getProducts(category[1])
+            setattr(self, "menu" + category[1], Menu.Menu(products,
+                    category[2], self, hold=self.holder))
+            itemsLayout.addWidget(getattr(self, "menu" + category[1]))
+            tabs[category[1]] = (x, itemsLayout)
             x += 1
         tabsWidget = Menu.Tabs(tabs, parent=self)
         tabsLayout = QHBoxLayout()

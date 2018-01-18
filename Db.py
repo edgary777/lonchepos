@@ -248,8 +248,8 @@ class Db(object):
                     tipo int, descuento float, usos int, caducidad date);"""
         cursor.execute(query)
 
-        query = """CREATE TABLE IF NOT EXISTS categorias(categoria TEXT,
-                    color VARCHAR);"""
+        query = """CREATE TABLE IF NOT EXISTS categorias(ID INTEGER PRIMARY KEY,
+                    categoria TEXT, color VARCHAR);"""
         cursor.execute(query)
 
         query = """SELECT * FROM categorias;"""
@@ -258,7 +258,7 @@ class Db(object):
         tb = cursor.fetchall()
 
         if len(tb) == 0:
-            query = """INSERT INTO categorias VALUES('DUMMY', '29, 235, 130');"""
+            query = """INSERT INTO categorias VALUES('0', 'DUMMY', '29, 235, 130');"""
             cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS configuraciones(descripcion TEXT,
