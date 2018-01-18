@@ -187,7 +187,7 @@ class SessionBtn(QAbstractButton):
             self.color = QColor(color1)
 
         # If this is activated the buttons will grow with the screen
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
 
         label = QLabel(str(self.label))
         label.setStyleSheet(style)
@@ -277,7 +277,7 @@ class NewSessionBtn(QAbstractButton):
         self.label = "+"
 
         # If this is activated the buttons will grow with the screen
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
 
         self.clicked.connect(lambda: obj.createSession())
 

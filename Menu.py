@@ -28,9 +28,9 @@ class Menu(QWidget):
         roundness = 20
         style = """
             QLabel {
-                color: black;
+                color: white;
                 font-weight: bold;
-                font-size: 17pt;
+                font-size: 15pt;
                 font-family: Asap;
             };
             """

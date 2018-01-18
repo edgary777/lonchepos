@@ -243,6 +243,22 @@ class Session(QWidget):
                 font-weight: bold;
                 font-family: Asap;
                 font-size: 15pt;
+            }
+            QRadioButton::indicator::unchecked{
+                border: 1px solid darkgray;
+                border-radius: 10px;
+                background-color: yellow;
+                width: 20px;
+                height: 20px;
+                margin-left: 5px;
+            }
+            QRadioButton::indicator::checked{
+                border: 1px solid darkgray;
+                border-radius: 10px;
+                background-color: black;
+                width: 20px;
+                height: 20px;
+                margin-left: 5px;
             };
             """
 
