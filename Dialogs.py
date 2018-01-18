@@ -367,6 +367,10 @@ class PayDialog(QDialog):
         payLabel = QLabel("Paga con:")
         payLabel.setStyleSheet(style)
 
+        validator = QDoubleValidator(0.0, 10000.0, 1, self)
+        validator.setNotation(QDoubleValidator.StandardNotation)
+        self.payment.setValidator(validator)
+
         self.payment.textChanged.connect(lambda: self.setChange(self.payment))
 
         self.change = QLabel("ERROR")
