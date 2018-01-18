@@ -484,8 +484,11 @@ class IODialog(QDialog):
 
     def iDb(self):
         """Import a database and refresh."""
-        self.db.importDb()
-        self.accept()
+        try:
+            self.db.importDb()
+            self.accept()
+        except PermissionError:
+            self.reject()
 
     def eDb(self):
         """Export all databases."""

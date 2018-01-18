@@ -43,21 +43,22 @@ class DbIo(QWidget):
                                                directory="/",
                                                filter="CSV (*.csv)")
 
-        fileName = fileName[0]
-        table = fileName.split("/")
-        table = table[len(table) - 1].split(".")
-        table = table[0]
+        if fileName[0] != "":
+            fileName = fileName[0]
+            table = fileName.split("/")
+            table = table[len(table) - 1].split(".")
+            table = table[0]
 
-        rows = []
+            rows = []
 
-        if not table not in dataBases:
-            with open(fileName) as csvfile:
-                re = csv.reader(csvfile)
-                for row in re:
-                    rows.append(row)
+            if not table not in dataBases:
+                with open(fileName) as csvfile:
+                    re = csv.reader(csvfile)
+                    for row in re:
+                        rows.append(row)
 
-        db = Db.Db()
-        db.overwriteTable(table, rows)
+            db = Db.Db()
+            db.overwriteTable(table, rows)
 
 
 # x = True
