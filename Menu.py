@@ -87,9 +87,9 @@ class Tabs(QWidget):
 
         # Buttons creator
         layout = QHBoxLayout()
-        for key, value in self.items.items():
-            setattr(self, key, Buttons.StrokeBtn(width, height, roundness,
-                    color, key, style, index=value[0], obj=value[1],
+        for key, value in sorted(self.items.items()):
+            setattr(self, value[0], Buttons.StrokeBtn(width, height, roundness,
+                    color, value[0], style, index=value[1], obj=value[2],
                     parent=self))
-            layout.addWidget(getattr(self, key))
+            layout.addWidget(getattr(self, value[0]))
         self.setLayout(layout)
