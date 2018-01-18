@@ -9,7 +9,7 @@ from PyQt5.QtPrintSupport import *
 class Ticket(QDialog):
     """Ticket widget."""
 
-    def __init__(self, data, parent, simplified=None):
+    def __init__(self, data, parent, simplified=None, cancelled=False):
         """Init."""
         super().__init__(parent)
 
@@ -22,15 +22,15 @@ class Ticket(QDialog):
         if self.simplified:
             self.simplifiedTicket()
         else:
-            self.ticket()
+            self.ticket(cancelled)
 
-    def ticket(self):
+    def ticket(self, cancelled=False):
         """Ticket visualization is created here."""
         layout = QVBoxLayout()
 
         header = self.ticketHeader()
         content = self.ticketContent()
-        footer = self.ticketFooter()
+        footer = self.ticketFooter(cancelled)
 
         layout.addLayout(header)
         layout.addLayout(content)
@@ -199,9 +199,21 @@ class Ticket(QDialog):
 
         return content
 
-    def ticketFooter(self):
+    def ticketFooter(self, cancelled):
         """Ticket footer is created here."""
-        return None
+        if cancelled:
+            layout = QVBoxLayout()
+            style = """QLabel {
+                font-weight: boldest;
+                font-size: 25pt;
+            }"""
+            cancelLabel = QLabel("CANCELADO")
+            cancelLabel.setAlignment(Qt.AlignCenter)
+            cancelLabel.setStyleSheet(style)
+            layout.addWidget(cancelLabel)
+            return layout
+        else:
+            return None
 
     def simplifiedHeader(self):
         """Simplified header is created here."""

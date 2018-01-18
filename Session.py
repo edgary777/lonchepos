@@ -96,7 +96,7 @@ class MultiSession(QWidget):
         dialog = Dialogs.QuestionDialog(self, question)
         if dialog.exec_():
             session.cancelado = 1
-            session.printBoth()
+            session.printTicket(cancelled=True)
 
     def addEverything(self):
         """Add all Sessions to the layout."""
@@ -448,11 +448,11 @@ class Session(QWidget):
             self.printSimplified()
         self.printTicket()
 
-    def printTicket(self):
+    def printTicket(self, cancelled=False):
         """Simplified ticket printer."""
         if self.orderTotal.getTotal() > 0:
             self.setTime()
-            ticket = Ticket.Ticket(self.collector(), self)
+            ticket = Ticket.Ticket(self.collector(), self, cancelled=cancelled)
             # if ticket.exec_():
             #     pass
             printer = Printer.Print()
