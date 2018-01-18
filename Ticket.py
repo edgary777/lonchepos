@@ -241,12 +241,13 @@ class Ticket(QDialog):
             header.addWidget(line)
 
         if self.notes:
-            notes = textwrap.wrap(str(self.notes), 17)
+            notes = textwrap.wrap(str(self.notes), 18)
             x = 0
             for linea in notes:
                 setattr(self, "line" + str(x), QLabel(str(linea)))
                 getattr(self, "line" + str(x)).setAlignment(Qt.AlignCenter)
                 getattr(self, "line" + str(x)).setStyleSheet(style)
+                getattr(self, "line" + str(x)).setMargin(0)
                 header.addWidget(getattr(self, "line" + str(x)))
                 x += 1
 
@@ -298,6 +299,7 @@ class Ticket(QDialog):
                     getattr(self, key).setAlignment(Qt.AlignCenter)
                 else:
                     getattr(self, key).setAlignment(Qt.AlignLeft)
+                getattr(self, key).setMargin(0)
                 content.addWidget(getattr(self, key), y, x)
                 x += 1
             y += 1
