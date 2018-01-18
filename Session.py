@@ -502,6 +502,8 @@ class Session(QWidget):
             self.ID = db.getFolio() + 1
         else:
             self.ID = sessions[len(sessions) - 1].getID() + 1
+            if self.ID < db.getFolio() + 1:
+                self.ID = db.getFolio() + 1
 
     def getID(self):
         """Return an id for the session."""
