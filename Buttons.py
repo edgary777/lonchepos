@@ -323,12 +323,16 @@ class PicButton(QAbstractButton):
     Functionality is mostly the same as QPushButton.
     """
 
-    def __init__(self, pixmap, pixmap_hover, pixmap_pressed, parent):
+    def __init__(self, pixmap, pixmap_hover, pixmap_pressed, parent,
+                 actionL=None, actionR=None):
         """Init."""
         super().__init__(parent)
         self.pixmap = QPixmap(pixmap)
         self.pixmap_hover = QPixmap(pixmap_hover)
         self.pixmap_pressed = QPixmap(pixmap_pressed)
+
+        self.actionL = actionL
+        self.actionR = actionR
 
         self.pressed.connect(self.update)
         self.released.connect(self.update)
@@ -352,6 +356,21 @@ class PicButton(QAbstractButton):
     def sizeHint(self):
         """Size hint."""
         return self.pixmap.size()
+
+    def setActionL(self, action):
+        """Set left mouse button acton."""
+        self.actionL = action
+
+    def setActionR(self, action):
+        """Set right mouse button acton."""
+        self.actionR = action
+
+    def mousePressEvent(self, QMouseEvent):
+        """Reimplement mouse events."""
+        if QMouseEvent.button() == Qt.LeftButton:
+            self.actionL()
+        elif QMouseEvent.button() == Qt.RightButton:
+            self.actionR()
 
 
 class StrokeBtn2(QAbstractButton):
