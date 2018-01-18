@@ -212,7 +212,7 @@ class Ticket(QDialog):
             color: black;
             font-weight: bold;
             font-size: 17pt;
-            font-family: Asap;
+            font-family: Source Code Pro;
         };"""
 
         if self.nombre:

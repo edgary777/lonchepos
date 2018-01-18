@@ -23,7 +23,7 @@ class Menu(QWidget):
         layout = QGridLayout()
 
         # Common style settings for the buttons
-        width = 150
+        width = 100
         height = 50
         roundness = 20
         style = """
