@@ -12,7 +12,6 @@ class DbIo(QWidget):
         """Init."""
         super().__init__(parent)
 
-
     def exportDb(self):
         """Export the database tables to CSV files."""
         caption = "Selecciona en donde guardar la base de datos"
