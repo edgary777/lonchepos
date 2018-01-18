@@ -15,7 +15,7 @@ class Visualizer(QWidget):
         self.tableTicketProducts = QTableWidget(100, 5)
         self.tableProductos = QTableWidget(100, 4)
         self.tableCupones = QTableWidget(100, 5)
-        self.tableCategorias = QTableWidget(100, 2)
+        self.tableCategorias = QTableWidget(100, 3)
         self.tableConfiguraciones = QTableWidget(100, 5)
         self.tables = [self.tableTicket, self.tableTicketProducts,
                        self.tableProductos, self.tableCupones,
