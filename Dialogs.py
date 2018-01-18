@@ -40,6 +40,7 @@ class DctDialog(QDialog):
                      font-family: Asap;
                      font-weight: bold;
                      font-size: 25pt;
+                     color: white;
                      }"""
 
         self.newTotalLabel = QLabel("$" + str(self.total))
@@ -158,6 +159,13 @@ class DctDialog(QDialog):
         self.parent.orderTotal.updateDcto(dcto)
         self.accept()
 
+    def paintEvent(self, event):
+        """Set window background color."""
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), Qt.gray)
+        self.setPalette(p)
+
 
 class PopOrderDialog(QDialog):
     """Dialog to hold PopOrderWidget."""
@@ -239,6 +247,13 @@ class PopOrderDialog(QDialog):
             order.multiEdit(editItems)
         self.accept()
 
+    def paintEvent(self, event):
+        """Set window background color."""
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), Qt.gray)
+        self.setPalette(p)
+
 
 class PopOrderWidget(QWidget):
     """Widget to select items to pop from one order to another one."""
@@ -259,12 +274,13 @@ class PopOrderWidget(QWidget):
                      font-family: Asap;
                      font-weight: bold;
                      font-size: 25pt;
+                     font-color: white;
                      }
-                     QSpinBox {
+                    QSpinBox {
                      font-family: Asap;
                      font-weight: bold;
                      font-size: 25pt;
-                     }"""
+                    }"""
 
         layout = QVBoxLayout()
         x = 0
@@ -289,6 +305,13 @@ class PopOrderWidget(QWidget):
 
         self.setLayout(layout)
 
+    def paintEvent(self, event):
+        """Set window background color."""
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), Qt.white)
+        self.setPalette(p)
+
 
 class PayDialog(QDialog):
     """Dialog to accept payment for an order."""
@@ -307,41 +330,49 @@ class PayDialog(QDialog):
 
     def initUi(self):
         """Ui setup."""
-        styleInputs = """QLineEdit {
+        style = """QLineEdit {
                      border-radius: 20%;
                      padding-left: 10px;
                      font-family: Asap;
                      font-weight: bold;
                      font-size: 25pt;
-                     }"""
-
-        styleLabels = """QLabel {
+                     color: white;
+                }
+                QLabel {
                      font-family: Asap;
                      font-weight: bold;
                      font-size: 25pt;
-                     }"""
+                     color:white;
+                }
+                QPushButton {
+                    font-family: Asap;
+                    font-weight: bold;
+                    font-size: 20pt;
+                }"""
 
         btnOk = QPushButton("Aceptar")
         btnOk.clicked.connect(self.acceptMe)
+        btnOk.setStyleSheet(style)
         btnCancel = QPushButton("Cancelar")
+        btnCancel.setStyleSheet(style)
         btnCancel.clicked.connect(self.reject)
 
         total = QLabel(str(self.total))
-        total.setStyleSheet(styleLabels)
+        total.setStyleSheet(style)
         totalLabel = QLabel("Total:")
-        totalLabel.setStyleSheet(styleLabels)
+        totalLabel.setStyleSheet(style)
 
         self.payment = QLineEdit()
-        self.payment.setStyleSheet(styleInputs)
+        self.payment.setStyleSheet(style)
         payLabel = QLabel("Paga con:")
-        payLabel.setStyleSheet(styleLabels)
+        payLabel.setStyleSheet(style)
 
         self.payment.textChanged.connect(lambda: self.setChange(self.payment))
 
         self.change = QLabel("ERROR")
-        self.change.setStyleSheet(styleLabels)
+        self.change.setStyleSheet(style)
         changeLabel = QLabel("Cambio:")
-        changeLabel.setStyleSheet(styleLabels)
+        changeLabel.setStyleSheet(style)
 
         layout = QGridLayout()
 
@@ -369,7 +400,7 @@ class PayDialog(QDialog):
             else:
                 self.ok = True
 
-                self.change.setText(str(round(float(self.payment.text())- self.total, 2)))
+                self.change.setText(str(round(float(self.payment.text()) - self.total, 2)))
         else:
             self.ok = False
             self.change.setText("ERROR")
@@ -382,6 +413,13 @@ class PayDialog(QDialog):
             self.parent.cambio = round(payment - self.total, 2)
             self.parent.printBoth()
             self.accept()
+
+    def paintEvent(self, event):
+        """Set window background color."""
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), Qt.gray)
+        self.setPalette(p)
 
 
 class QuestionDialog(QDialog):
@@ -436,6 +474,13 @@ class QuestionDialog(QDialog):
         layout.addLayout(btnLayout)
 
         self.setLayout(layout)
+
+    def paintEvent(self, event):
+        """Set window background color."""
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), Qt.gray)
+        self.setPalette(p)
 
 
 class IODialog(QDialog):
