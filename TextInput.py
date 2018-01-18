@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QTextEdit, QVBoxLayout, QWidget, QSizePolicy
+from PyQt5.QtWidgets import QTextEdit, QVBoxLayout, QWidget, QSizePolicy, QLineEdit
 from PyQt5.QtCore import QSize
 
 
@@ -46,7 +46,7 @@ class TextInputSmall(QWidget):
         """Init."""
         super().__init__(parent)
 
-        self.field = QTextEdit()
+        self.field = QLineEdit()
 
         layout = QVBoxLayout()
         layout.addWidget(self.field)
@@ -54,7 +54,7 @@ class TextInputSmall(QWidget):
         self.setLayout(layout)
         self.setStyleSheet("""border: 2px solid;
                               border-radius: 10px;
-                              background-color: palette(base);
+                              background-color: white;
                               font-weight: Bold;
                               font-size: 15pt;
                               font-family: Asap;""")
