@@ -65,7 +65,7 @@ class Order(QWidget):
         self.orderLayout = QGridLayout()
         self.orderLayout.setSpacing(0)
         self.orderLayout.setColumnStretch(0, 1)
-        self.orderLayout.setColumnStretch(1, 6)
+        self.orderLayout.setColumnStretch(1, 11)
 
         self.titles = self.createTitles()
         self.orderLayout.addLayout(self.titles, 0, 1)
@@ -84,6 +84,10 @@ class Order(QWidget):
             getattr(self, title).setAlignment(Qt.AlignCenter)
             layout.addWidget(getattr(self, title))
             index = titles.index(title)
+            if title == "ARTICULO":
+                layout.setStretchFactor(getattr(self, title), 3)
+            else:
+                layout.setStretchFactor(getattr(self, title), 1)
             if index < 3:
                 setattr(self, "i" + str(index), Vdivider(parent=self))
                 layout.addWidget(getattr(self, "i" + str(index)))
@@ -262,6 +266,10 @@ class ItemUI(QWidget):
             label.setStyleSheet(style)
             setattr(self, x, WidgetItem(self, label))
             layout.addWidget(getattr(self, x))
+            if x == "Name":
+                layout.setStretchFactor(getattr(self, x), 3)
+            else:
+                layout.setStretchFactor(getattr(self, x), 1)
             index = attr.index(x)
             if index < 3:
                 setattr(self, "i" + str(index), Vdivider(parent=self))
@@ -270,7 +278,13 @@ class ItemUI(QWidget):
 
     def getBtn(self):
         """Return the button to delete the item."""
+        style = """QPushButton {
+            color: red;
+            font-weight: bold;
+            font-size: 18pt;
+        }"""
         btn = QPushButton("X")
+        btn.setStyleSheet(style)
         btn.clicked.connect(lambda: self.parent.removeItem(self.item))
         close = WidgetItem(self, btn)
         return close
