@@ -239,6 +239,7 @@ class Ticket(QDialog):
                 x += 1
 
         if self.nombre or self.notes:
+            header.setSpacing(0)
             return header
         else:
             return None
@@ -306,6 +307,7 @@ class Ticket(QDialog):
         hour.setAlignment(Qt.AlignCenter)
 
         content.addWidget(hour, y + 1, 0)
+        content.setSpacing(0)
 
         return content
 
