@@ -43,7 +43,7 @@ class Db(object):
         productos = data["productos"]
 
         query = """INSERT INTO tickets VALUES({}, {}, {}, {}, {}, {}, {},
-                {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+                {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
                 {}, {}, {}, {});""".format(folio, nombre, llevar, pagado, sexo,
                                            edad, notas, factura, total,
                                            subtotal, iva, descuento,
