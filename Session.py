@@ -196,11 +196,11 @@ class Session(QWidget):
         self.sexo = 0
         self.edad = 0
 
-        self.invoiceRfc = None
-        self.invoiceTel = None
-        self.invoiceEmail = None
-        self.invoiceName = None
-        self.invoiceUse = None
+        self.invoiceRfc = ""
+        self.invoiceTel = ""
+        self.invoiceEmail = ""
+        self.invoiceName = ""
+        self.invoiceUse = ""
 
         self.cancelado = 0
 
