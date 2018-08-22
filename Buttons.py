@@ -368,9 +368,11 @@ class PicButton(QAbstractButton):
     def mousePressEvent(self, QMouseEvent):
         """Reimplement mouse events."""
         if QMouseEvent.button() == Qt.LeftButton:
-            self.actionL()
+            if self.actionL:
+                self.actionL()
         elif QMouseEvent.button() == Qt.RightButton:
-            self.actionR()
+            if self.actionR:
+                self.actionR()
 
 
 class StrokeBtn2(QAbstractButton):
