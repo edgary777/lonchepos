@@ -148,7 +148,8 @@ class Db(object):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
 
-        query = """SELECT * FROM configuraciones WHERE grupo='{}';""".format(str(group))
+        query = """SELECT * FROM configuraciones WHERE grupo='{}';""".format(
+            str(group))
         cursor.execute(query)
         items = cursor.fetchall()
 
@@ -202,7 +203,7 @@ class Db(object):
 
         for row in rows:
             valstr = "?"
-            if len(row)> 1:
+            if len(row) > 1:
                 for val in range((len(row) - 1)):
                     valstr += ", ?"
             query = "INSERT INTO {} VALUES({});".format(table, valstr)
@@ -264,6 +265,23 @@ class Db(object):
         query = """CREATE TABLE IF NOT EXISTS configuraciones(descripcion TEXT,
                     valor VARCHAR, tipo INT, grupo INT, categoria TEXT);"""
         cursor.execute(query)
+
+        # Placeholders for the data needed for the ticket.
+        if len(tb) == 0:
+            query = """INSERT INTO configuraciones VALUES('imagen_ticket','','link','TICKET','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('titulo','','texto','TICKET','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('direccion','','texto','TICKET','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('regimen_fiscal','','texto','TICKET','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('RFC','','texto','TICKET','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('nombre','','texto','TICKET','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('telefono','','texto','TICKET','headerConfig')"""
+            cursor.execute(query)
 
         connection.commit()
         connection.close()
