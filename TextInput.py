@@ -61,7 +61,7 @@ class TextInputSmall(QWidget):
 
     def getText(self):
         """Return the text in the field."""
-        return self.field.toPlainText()
+        return self.field.text()
 
     def minimumSizeHint(self):
         """Minimum size hint."""
