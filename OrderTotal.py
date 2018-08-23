@@ -29,7 +29,6 @@ class OrderTotal(QWidget):
         """Init."""
         style = """
             QLabel {
-                color: black;
                 font-weight: bold;
                 font-size: 25pt;
                 font-family: Asap;
@@ -53,6 +52,7 @@ class OrderTotal(QWidget):
         layout.addLayout(totalLayout)
 
         self.setLayout(layout)
+        self.setStyleSheet("QLabel {color:black;}")
 
     def updateTotal(self, total, dcto=None):
         """Update the total shown."""
@@ -80,22 +80,16 @@ class OrderTotal(QWidget):
         return self.dcto
 
     def getTotal(self):
-        """Return the order total before taxes."""
+        """Return the order total after taxes."""
         if self.dcto:
-            if self.invoice:
-                total = round((self.total * (1 - self.dcto[0])) * 1.16, 2)
-            else:
-                total = round(self.total * (1 - self.dcto[0]), 2)
+            total = round(self.total * (1 - self.dcto[0]), 6)
         else:
-            if self.invoice:
-                total = round(self.total * 1.16, 2)
-            else:
-                total = round(self.total, 2)
+            total = round(self.total, 6)
         return total
 
     def getSubtotal(self):
         """Return the order total before taxes."""
-        return self.subtotal
+        return round(self.subtotal * (100/116), 6)
 
     def getVat(self):
         """Return the order VAT."""
@@ -104,38 +98,25 @@ class OrderTotal(QWidget):
     def updateUi(self):
         """Update the Ui."""
         if self.dcto:
-            if self.invoice:
-                self.subtotal = (self.total * (1 - self.dcto[0])) if self.total > 0 else 0
-                self.subtotal = round(self.subtotal, 2)
-                self.vat = self.subtotal * 0.16 if self.subtotal > 0 else 0
-                self.vat = round(self.vat, 2)
-                self.subtotalLabel.setText(str(self.subtotal))
-                self.dctoLabel.setText(str(round(self.total * self.dcto[0], 2)))
-                self.vatLabel.setText(str(self.vat))
-                self.totalLabel.setText("$" + str(round((self.total * (1 - self.dcto[0])) * 1.16, 2)))
-            else:
-                self.subtotal = round(self.total, 2)
-                self.vat = 0
-                self.totalLabel.setText("$" + str(round(self.total * (1 - self.dcto[0]), 2)))
-                self.dctoLabel.setText(str(round(self.total * self.dcto[0], 2)))
-                self.subtotalLabel.setText(str(self.subtotal))
-                self.vatLabel.setText(str(self.vat))
+            self.subtotal = (self.total * (1 - self.dcto[0])) if self.total > 0 else 0
+            self.subtotal = round(self.subtotal * (100/116), 2)
+            self.vat = round(self.subtotal * 0.16 if self.subtotal > 0 else 0, 2)
+            self.subtotalLabel.setText(str(self.subtotal))
+            self.dctoLabel.setText(str(round(self.total * self.dcto[0], 2)))
+            self.vatLabel.setText(str(self.vat))
+            self.totalLabel.setText("$" + str(round(self.total * (1 - self.dcto[0]), 2)))
         else:
             self.dcto = 0
-            if self.invoice:
-                self.subtotal = self.total if self.total > 0 else 0
-                self.subtotal = round(self.subtotal, 2)
-                self.vat = self.subtotal * 0.16 if self.subtotal > 0 else 0
-                self.vat = round(self.vat, 2)
-                self.subtotalLabel.setText(str(self.subtotal))
-                self.vatLabel.setText(str(self.vat))
-                self.totalLabel.setText("$" + str(round(self.total * 1.16, 2)))
-            else:
-                self.subtotal = 0
-                self.vat = 0
-                self.totalLabel.setText("$" + str(self.total))
-                self.subtotalLabel.setText(str(self.subtotal))
-                self.vatLabel.setText(str(self.vat))
+            self.subtotal = self.total if self.total > 0 else 0
+            self.subtotal = round(self.subtotal * (100/116), 2)
+            self.vat = round(self.subtotal * 0.16 if self.subtotal > 0 else 0, 2)
+            self.subtotalLabel.setText(str(self.subtotal))
+            self.vatLabel.setText(str(self.vat))
+            self.totalLabel.setText("$" + str(round(self.total, 2)))
+        if self.invoice:
+            self.setStyleSheet("QLabel {color:red;}")
+        else:
+            self.setStyleSheet("QLabel {color:black;}")
 
     def extraData(self):
         """Extra data labels generator."""
@@ -147,7 +128,6 @@ class OrderTotal(QWidget):
 
         styleLabel = """
             QLabel {
-                color: black;
                 font-size: 10pt;
                 font-family: Asap;
             };
@@ -155,7 +135,6 @@ class OrderTotal(QWidget):
 
         styleNum = """
             QLabel {
-                color: black;
                 font-weight: bold;
                 font-size: 12pt;
                 font-family: Asap;
