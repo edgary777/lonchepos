@@ -92,11 +92,17 @@ class MultiSession(QWidget):
 
     def cancelOrder(self, session, index):
         """Cancel passed session."""
-        question = "SEGURO QUE QUIERES CANCELAR ESTA ORDEN?"
-        dialog = Dialogs.QuestionDialog(self, question)
-        if dialog.exec_():
-            session.cancelado = 1
-            session.printTicket(cancelled=True)
+        # if the order has items, cancel and save to the database
+        if session.orderTotal.getTotal() > 0:
+            question = "SEGURO QUE QUIERES CANCELAR ESTA ORDEN?"
+            dialog = Dialogs.QuestionDialog(self, question)
+            if dialog.exec_():
+                session.cancelado = 1
+                session.printTicket(cancelled=True)
+        # if the order is empty, cancel only if it is the last order in the list.
+        else:
+            if (len(self.sessions) - 1) == self.sessions.index(session):
+                self.deleteSession(session, self.sessions.index(session))
 
     def addEverything(self):
         """Add all Sessions to the layout."""
