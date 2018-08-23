@@ -2,9 +2,6 @@ import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout
 from PyQt5.QtCore import Qt
 import Session
-import logging
-import os
-import traceback
 
 
 class MainWindow(QWidget):
