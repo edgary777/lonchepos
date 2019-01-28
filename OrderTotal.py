@@ -67,7 +67,7 @@ class OrderTotal(QWidget):
         self.updateUi()
 
     def updateDcto(self, dcto):
-        """Toggle whether tax is calculated or not."""
+        """Update the discount applied to the order."""
         self.dcto = dcto
         self.updateUi()
 
