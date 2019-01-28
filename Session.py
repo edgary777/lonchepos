@@ -586,7 +586,7 @@ class Session(QWidget):
             "edad": self.getAge(),
             "notas": self.inputField.getText(),
             "factura": self.factura,
-            "total": self.orderTotal.getTotal(),
+            "total": self.orderTotal.getTotal(nodcto=True),
             "subtotal": self.orderTotal.getSubtotal(),
             "iva": self.orderTotal.getVat(),
             "descuento": self.descuento,
