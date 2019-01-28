@@ -79,9 +79,9 @@ class OrderTotal(QWidget):
         """Return the discount if exists."""
         return self.dcto
 
-    def getTotal(self):
+    def getTotal(self, nodcto=False):
         """Return the order total after taxes."""
-        if self.dcto:
+        if self.dcto and nodcto is False:
             total = round(self.total * (1 - self.dcto[0]), 6)
         else:
             total = round(self.total, 6)
