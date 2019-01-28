@@ -554,8 +554,8 @@ class Session(QWidget):
         """Collect and return all data to be recorded on the database."""
         items = {"factura": self.orderTotal.getInvoice(),
                  "descuento": self.orderTotal.getDcto()[0],
-                 "descuentoa": self.orderTotal.getDcto()[1],
-                 "descuentop": self.orderTotal.getDcto()[2],
+                 "descuentop": self.orderTotal.getDcto()[1],
+                 "descuentoa": self.orderTotal.getDcto()[2],
                  "Np": self.np,
                  "Llevar": self.llevar}
 
