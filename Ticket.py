@@ -169,8 +169,9 @@ class Ticket(QDialog):
         if self.factura:
             z = 1
             if self.dcto:
-                total = self.total
-                dcto = round(self.subtotal * self.dcto, 2)
+                total = self.total * abs(self.dcto - 1)
+                dcto = round(self.total * self.dcto, 2)
+                print(dcto)
                 content.addWidget(QLabel("DCTO"), y + z, 0)
                 content.addWidget(QLabel("$" + str(dcto)), y + z, 1)
                 z += 1
@@ -187,8 +188,8 @@ class Ticket(QDialog):
         else:
             z = 1
             if self.dcto:
-                total = self.total
-                dcto = round(self.subtotal * self.dcto, 2)
+                total = self.total * abs(self.dcto - 1)
+                dcto = round(self.total * self.dcto, 2)
                 content.addWidget(QLabel("DCTO"), y + z, 0)
                 content.addWidget(QLabel("$" + str(dcto)), y + z, 1)
                 z += 1
