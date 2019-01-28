@@ -395,7 +395,10 @@ class PayDialog(QDialog):
     def setChange(self, payment):
         """Update the change total."""
         if len(payment.text()) > 0:
-            payment = float(payment.text())
+            try:
+                payment = float(payment.text())
+            except ValueError:
+                payment = 0
             if payment - self.total < 0:
                 self.ok = False
                 self.change.setText("ERROR")
