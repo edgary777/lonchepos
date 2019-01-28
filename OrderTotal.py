@@ -89,7 +89,8 @@ class OrderTotal(QWidget):
 
     def getSubtotal(self):
         """Return the order total before taxes."""
-        return round(self.subtotal * (100/116), 6)
+        val = round(self.getTotal() * (100/116), 6)
+        return val
 
     def getVat(self):
         """Return the order VAT."""
