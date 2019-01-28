@@ -403,7 +403,7 @@ class Ticket(QDialog):
         self.notes = data["notas"]
         self.factura = data["factura"]
         self.total = data["total"]
-        self.subtotal = data["subtotal"]
+        self.subtotal = round(data["subtotal"], 2)
         self.iva = data["iva"]
         self.dcto = data["descuento"]
         self.paga = data["paga"]
