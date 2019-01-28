@@ -525,7 +525,7 @@ class Session(QWidget):
         """Toggle and update discount."""
         if self.orderTotal.getTotal() > 0:
             dcto = self.orderTotal.getDcto()
-            dialog = Dialogs.DctDialog(self.orderTotal.getTotal(), parent=self,
+            dialog = Dialogs.DctDialog(self.orderTotal.getTotal(nodcto=True), parent=self,
                                        percentage=dcto[1], amount=dcto[2],
                                        code=dcto[3])
             if dialog.exec_():
