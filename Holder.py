@@ -301,6 +301,11 @@ class Item(QWidget):
         self.quant = data[1]
         self.price = data[2]
         self.total = float(self.quant) * float(self.price)
+        self.category = data[3]
+
+    def getCat(self):
+        """placeholder"""
+        return self.category
 
     def editQuant(self, new):
         """Edits the quantity of products and updates the total."""
@@ -322,6 +327,10 @@ class Item(QWidget):
     def getTotal(self):
         """Return the total cost of the items."""
         return self.total
+
+    def getCategory(self):
+        """Return the category of the item."""
+        return self.category
 
 
 class WidgetItem(QWidget):

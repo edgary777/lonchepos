@@ -46,7 +46,7 @@ class MenuBtn(QAbstractButton):
     def mousePressEvent(self, QMouseEvent):
         """Reimplement mouse events."""
         if QMouseEvent.button() == Qt.LeftButton:
-            li = [self.data[1], 1, self.data[2]]
+            li = [self.data[1], 1, self.data[2], self.data[3]]
             order = self.holder.getOrder()
             order.addItem(li)
         elif QMouseEvent.button() == Qt.RightButton:
@@ -279,6 +279,10 @@ class NewSessionBtn(QAbstractButton):
         # If this is activated the buttons will grow with the screen
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
 
+        # add context menu ability
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.context_menu)
+
         self.clicked.connect(lambda: obj.createSession())
 
         label = QLabel(self.label)
@@ -290,6 +294,19 @@ class NewSessionBtn(QAbstractButton):
         self.setLayout(layout)
 
         # self.setFixedSize(self.width, self.height)
+
+    def context_menu(self):
+        menu = QMenu(self)
+        action1 = QAction("Uber Eats")
+        action1.triggered.connect(lambda: self.obj.createSession(1))
+        
+        action2 = QAction("DIDI")
+        action2.triggered.connect(lambda: self.obj.createSession(2))
+           
+        menu.addAction(action1)
+        menu.addAction(action2)
+
+        menu.exec_(QCursor.pos())
 
     def paintEvent(self, event):
         """Paint Event."""

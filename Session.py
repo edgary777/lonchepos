@@ -43,9 +43,13 @@ class MultiSession(QWidget):
 
         self.setLayout(self.layout)
 
-    def createSession(self):
-        """Create a new session."""
-        session = Session(self)
+    def createSession(self, appID=None):
+        """Create a new session, pass an app name if you want to make it an app session."""
+        if appID:
+            print("appID =", appID)
+            session = AppSession(self, appID)
+        else:
+            session = Session(self)
         self.sessions.append(session)
         self.UpdateUi()
         self.activeSession = self.sessions.index(session)
@@ -183,10 +187,9 @@ class Session(QWidget):
     to switch between them.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, *args, **kwargs):
         """Init."""
-        super().__init__(parent)
-
+        super(Session, self).__init__(parent, *args, **kwargs)
         self.parent = parent
         self.ticket = None
 
@@ -318,7 +321,9 @@ class Session(QWidget):
         sexAgeLayout.addStretch()
 
         for category in categories:
-            products = dBa.getProducts(category[1])
+            print("category = ")
+            print(category)
+            products = dBa.getProducts(category[1], category[3])
             setattr(self, "menu" + category[1], Menu.Menu(products,
                     category[2], self, hold=self.holder))
             itemsLayout.addWidget(getattr(self, "menu" + category[1]))
@@ -606,3 +611,162 @@ class Session(QWidget):
             "facUso": self.invoiceUse
         }
         return data
+
+
+class AppSession(Session):
+    """Subclass of Session meant to hold all objects pertaining to an app order"""
+
+    def __init__(self, parent, appID, *args, **kwargs):
+        self.appID = appID
+        super(AppSession, self).__init__(parent, *args, **kwargs)
+
+    def initUi(self):
+        """Ui is created here.
+
+        DO NOT USE 'x' AS A VARIABLE HERE AGAIN, IT WILL BREAK THE CODE
+        """
+        self.holder = Holder.Holder(self)
+
+        self.orderTotal = OrderTotal.OrderTotal(0, self)
+
+        dBa = Db()
+
+        categories = dBa.getAppCategories(self.appID)
+        itemsLayout = QStackedLayout()
+        tabs = {}
+        x = 0  # this is he only x that can be used in init
+
+        payStyle = """
+            QLabel {
+                color: black;
+                font-weight: bold;
+                font-size: 25pt;
+                font-family: Asap;
+            };
+            """
+
+        llevaStyle = """
+            QLabel {
+                color: Black;
+                font-weight: bold;
+                font-size: 15pt;
+                font-family: Asap;
+            };
+            """
+
+        tinyStyle = """
+            QRadioButton {
+                color: Black;
+                font-weight: bold;
+                font-family: Asap;
+                font-size: 15pt;
+            }
+            QRadioButton::indicator::unchecked{
+                border: 1px solid darkgray;
+                border-radius: 10px;
+                background-color: yellow;
+                width: 20px;
+                height: 20px;
+                margin-left: 5px;
+            }
+            QRadioButton::indicator::checked{
+                border: 1px solid darkgray;
+                border-radius: 10px;
+                background-color: black;
+                width: 20px;
+                height: 20px;
+                margin-left: 5px;
+            };
+            """
+
+        self.payBtn = Buttons.StrokeBtn2(100, 60, 15, qRgb(226,0,0),
+                                         "PAGAR", payStyle, self, sWidth=10,
+                                         hExpand=True)
+        self.payBtn.clicked.connect(self.pay)
+
+        self.llevaBtn = Buttons.StrokeBtn2(100, 60, 15, qRgb(33,46,226),
+                                           "L?", llevaStyle, self, sWidth=10)
+        self.llevaBtn.clicked.connect(self.toggleLleva)
+
+        self.npBtn = Buttons.StrokeBtn2(100, 60, 15, qRgb(33,46,226),
+                                           "P?", llevaStyle, self, sWidth=10)
+        self.npBtn.clicked.connect(self.toggleNp)
+
+        sexAgeLayout = QHBoxLayout()
+
+        sexAgeLayout.addStretch()
+        sexM = QRadioButton("M")
+        sexH = QRadioButton("H")
+        self.sexo = QButtonGroup(self)
+        self.sexBtns = [sexM, sexH]
+        z = 0
+        for btn in self.sexBtns:
+            btn.setStyleSheet(tinyStyle)
+            self.sexo.addButton(btn, x)
+            sexAgeLayout.addWidget(btn)
+            z += 1
+
+        sexAgeLayout.addSpacing(20)
+
+        age1 = QRadioButton("1")
+        age2 = QRadioButton("2")
+        age3 = QRadioButton("3")
+        age4 = QRadioButton("4")
+        self.edad = QButtonGroup(self)
+        self.ageBtns = [age1, age2, age3, age4]
+        z = 1
+        for btn in self.ageBtns:
+            btn.setStyleSheet(tinyStyle)
+            self.edad.addButton(btn, x)
+            sexAgeLayout.addWidget(btn)
+            z += 1
+        sexAgeLayout.addStretch()
+
+        for category in categories:
+            products = dBa.getProducts(category[1], category[3])
+            setattr(self, "menu" + category[1], Menu.Menu(products,
+                    category[2], self, hold=self.holder))
+            itemsLayout.addWidget(getattr(self, "menu" + category[1]))
+            tabs[category[0]] = (category[1], x, itemsLayout)
+            x += 1
+        tabsWidget = Menu.Tabs(tabs, parent=self)
+        tabsLayout = QHBoxLayout()
+        tabsLayout.addWidget(tabsWidget)
+
+        self.inputField = TextInput.TextInput(parent=self)
+        self.nameField = TextInput.TextInputSmall(parent=self)
+        self.nameField.setFixedHeight(55)
+
+        nameLayout = QVBoxLayout()
+        nameLayout.setSpacing(0)
+        nameLayout.addWidget(self.nameField)
+        nameLayout.addLayout(sexAgeLayout)
+
+        orderTopLayout = QHBoxLayout()
+        orderTopLayout.addLayout(nameLayout)
+        orderTopLayout.addWidget(self.orderTotal)
+
+        layoutC11 = QHBoxLayout()
+        layoutC11.addWidget(self.npBtn)
+        layoutC11.addWidget(self.llevaBtn)
+        layoutC11.addWidget(self.payBtn)
+
+        layoutC1 = QVBoxLayout()
+        layoutC1.addLayout(orderTopLayout)
+        layoutC1.addWidget(self.holder)
+        layoutC1.addLayout(layoutC11)
+
+        layoutH1C1 = QHBoxLayout()
+        layoutH1C1.addLayout(self.imgBtns())
+        layoutH1C1.addLayout(layoutC1)
+
+        layoutC2 = QVBoxLayout()
+        layoutC2.addLayout(tabsLayout)
+        layoutC2.addLayout(itemsLayout)
+        layoutC2.addWidget(self.inputField)
+
+        layout = QHBoxLayout()
+        layout.addLayout(layoutH1C1)
+        layout.addLayout(layoutC2)
+
+        self.setLayout(layout)

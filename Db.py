@@ -57,9 +57,10 @@ class Db(object):
             tPrecio = product.getPrice()
             tCantidad = product.getQuant()
             tTotal = product.getTotal()
+            tCategoria = product.getCat()
 
             query = """INSERT INTO ticketProducts VALUES({}, {}, {}, {},
-            {});""".format(folio, tNombre, tPrecio, tCantidad, tTotal)
+            {}, '{}');""".format(folio, tNombre, tPrecio, tCantidad, tTotal, tCategoria)
             cursor.execute(query)
 
         connection.commit()
@@ -97,15 +98,15 @@ class Db(object):
         connection.close()
         return product
 
-    def getProducts(self, cat):
+    def getProducts(self, catNombre, catTipo):
         """Return products list with metadata from the category passed."""
         connection = sqlite3.connect(self.database)
 
         cursor = connection.cursor()
 
-        cat = "'" + cat + "'"  # formatting category for sql query
+        catNombre = "'" + catNombre + "'"  # formatting category for sql query
 
-        query = "SELECT * FROM productos WHERE categoria = {};".format(cat)
+        query = "SELECT * FROM productos WHERE nombreCategoria = {} AND tipoCategoria = '{}';".format(catNombre, catTipo)
         cursor.execute(query)
         products = cursor.fetchall()
 
@@ -120,7 +121,28 @@ class Db(object):
 
         cursor = connection.cursor()
 
-        query = """SELECT * FROM categorias;"""
+        query = """SELECT * FROM categorias WHERE categoria = 0;"""
+        cursor.execute(query)
+        category = cursor.fetchall()
+
+        connection.commit()
+        connection.close()
+
+        return category
+
+    def getAppCategories(self, category):
+        """
+        Return a list of categories and their color.
+
+            The 'category' attribute is an INT other than 0.
+            
+            * made as an alt function to avoid modifying all existent code
+        """
+        connection = sqlite3.connect(self.database)
+
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM categorias WHERE categoria='{}';".format(category)
         cursor.execute(query)
         category = cursor.fetchall()
 
@@ -228,11 +250,11 @@ class Db(object):
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS ticketProducts(folio INTEGER,
-         producto TEXT, precio FLOAT, cantidad INT, total INT);"""
+         producto TEXT, precio FLOAT, cantidad INT, total INT, categoria INT);"""
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS productos(ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                    producto TEXT, precio FLOAT, categoria TEXT);"""
+                    producto TEXT, precio FLOAT, nombreCategoria TEXT, tipoCategoria INT);"""
         cursor.execute(query)
 
         query = """SELECT * FROM productos;"""
@@ -241,8 +263,17 @@ class Db(object):
         tb = cursor.fetchall()
 
         if len(tb) == 0:
-            query = """INSERT INTO productos('producto', 'precio', 'categoria')
-                       VALUES ('DUMMY', '10', 'DUMMY');"""
+            query = """INSERT INTO productos('producto', 'precio', 'nombreCategoria', 'tipoCategoria')
+                       VALUES ('DUMMY', '10', 'DUMMY', 0);"""
+            cursor.execute(query)
+            query = """INSERT INTO productos('producto', 'precio', 'nombreCategoria', 'tipoCategoria')
+                       VALUES ('DUMMY', '11', 'DUMMY2', 0);"""
+            cursor.execute(query)
+            query = """INSERT INTO productos('producto', 'precio', 'nombreCategoria', 'tipoCategoria')
+                       VALUES ('DUMMY', '12', 'DUMMY', 1);"""
+            cursor.execute(query)
+            query = """INSERT INTO productos('producto', 'precio', 'nombreCategoria', 'tipoCategoria')
+                       VALUES ('DUMMY', '13', 'DUMMY', 2);"""
             cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS cupones(codigo TEXT PRIMARY KEY,
@@ -250,7 +281,7 @@ class Db(object):
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS categorias(ID INTEGER PRIMARY KEY,
-                    categoria TEXT, color VARCHAR);"""
+                    nombre TEXT, color VARCHAR, categoria INT);"""
         cursor.execute(query)
 
         query = """SELECT * FROM categorias;"""
@@ -259,7 +290,13 @@ class Db(object):
         tb = cursor.fetchall()
 
         if len(tb) == 0:
-            query = """INSERT INTO categorias VALUES('0', 'DUMMY', '29, 235, 130');"""
+            query = """INSERT INTO categorias VALUES(0, 'DUMMY', '29, 235, 130', 0);"""
+            cursor.execute(query)
+            query = """INSERT INTO categorias VALUES(1, 'DUMMY2', '29, 235, 130', 0);"""
+            cursor.execute(query)
+            query = """INSERT INTO categorias VALUES(2, 'DUMMY', '255, 0, 0', 1);"""
+            cursor.execute(query)
+            query = """INSERT INTO categorias VALUES(3, 'DUMMY', '0, 0, 255', 2);"""
             cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS configuraciones(descripcion TEXT,
@@ -267,6 +304,7 @@ class Db(object):
         cursor.execute(query)
 
         # Placeholders for the data needed for the ticket.
+        # FIX the appSessions need to print a different dataset
         if len(tb) == 0:
             query = """INSERT INTO configuraciones VALUES('imagen_ticket','','link','TICKET','headerConfig')"""
             cursor.execute(query)
