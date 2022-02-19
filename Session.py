@@ -213,6 +213,8 @@ class Session(QWidget):
 
         self.cancelado = 0
 
+        self.configGroup = None
+
         self.ID = None
         self.setID()
 
@@ -573,7 +575,11 @@ class Session(QWidget):
                 setattr(self, key, value)
 
         db = Db()
-        headerConfig = db.getConfigGroup("TICKET")
+        print("configGroup = ", self.configGroup)
+        if not self.configGroup:
+            headerConfig = db.getConfigGroup("LOCAL")
+        else:
+            headerConfig = db.getConfigGroup(self.configGroup)
 
         data = {
             "imagen": headerConfig["imagen_ticket"],
@@ -619,6 +625,7 @@ class AppSession(Session):
     def __init__(self, parent, appID, *args, **kwargs):
         self.appID = appID
         super(AppSession, self).__init__(parent, *args, **kwargs)
+        self.configGroup = "APP"
 
     def initUi(self):
         """Ui is created here.

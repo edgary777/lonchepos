@@ -306,19 +306,33 @@ class Db(object):
         # Placeholders for the data needed for the ticket.
         # FIX the appSessions need to print a different dataset
         if len(tb) == 0:
-            query = """INSERT INTO configuraciones VALUES('imagen_ticket','','link','TICKET','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('imagen_ticket','','link','LOCAL','headerConfig')"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('titulo','','texto','TICKET','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('titulo','','texto','LOCAL','headerConfig')"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('direccion','','texto','TICKET','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('direccion','','texto','LOCAL','headerConfig')"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('regimen_fiscal','','texto','TICKET','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('regimen_fiscal','','texto','LOCAL','headerConfig')"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('RFC','','texto','TICKET','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('RFC','','texto','LOCAL','headerConfig')"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('nombre','','texto','TICKET','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('nombre','','texto','LOCAL','headerConfig')"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('telefono','','texto','TICKET','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('telefono','','texto','LOCAL','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('imagen_ticket','','link','APP','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('titulo','','texto','APP','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('direccion','','texto','APP','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('regimen_fiscal','','texto','APP','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('RFC','','texto','APP','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('nombre','','texto','APP','headerConfig')"""
+            cursor.execute(query)
+            query = """INSERT INTO configuraciones VALUES('telefono','','texto','APP','headerConfig')"""
             cursor.execute(query)
 
         connection.commit()
