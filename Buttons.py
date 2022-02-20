@@ -1,6 +1,8 @@
+from cgitb import text
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from functools import partial
 
 
 class MenuBtn(QAbstractButton):
@@ -260,7 +262,7 @@ class NewSessionBtn(QAbstractButton):
     """
 
     def __init__(self, width, height, rounded, color, style,
-                 parent, obj):
+                 parent, obj, apps):
         """Init.
 
         product is meant to be the product ID and it is to be emmited
@@ -275,6 +277,7 @@ class NewSessionBtn(QAbstractButton):
         self.color = QColor(color)
         self.obj = obj
         self.label = "+"
+        self.apps = apps
 
         # If this is activated the buttons will grow with the screen
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
@@ -297,16 +300,15 @@ class NewSessionBtn(QAbstractButton):
 
     def context_menu(self):
         menu = QMenu(self)
-        action1 = QAction("Uber Eats")
-        action1.triggered.connect(lambda: self.obj.createSession(1))
-        
-        action2 = QAction("DIDI")
-        action2.triggered.connect(lambda: self.obj.createSession(2))
-           
-        menu.addAction(action1)
-        menu.addAction(action2)
-
+        for app in self.apps:
+            setattr(self, app[1], QAction(app[1]))
+            getattr(self, app[1]).triggered.connect(partial(self.menuActions, app[0]))
+            menu.addAction(getattr(self, app[1]))
         menu.exec_(QCursor.pos())
+
+    def menuActions(self, name):
+        """perform an action when the context menu buttons are clicked."""
+        self.obj.createSession(name)
 
     def paintEvent(self, event):
         """Paint Event."""

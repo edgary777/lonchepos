@@ -66,6 +66,35 @@ class Db(object):
         connection.commit()
         connection.close()
 
+    def getAppsData(self):
+        """Return all the data for all the registered apps."""
+        connection = sqlite3.connect(self.database)
+
+        cursor = connection.cursor()
+
+        query = """SELECT * FROM appsData;"""
+        cursor.execute(query)
+        appsData = cursor.fetchall()
+
+        connection.commit()
+        connection.close()
+
+        return appsData
+
+    def getSingleAppData(self, appName):
+        """Return the product data."""
+        connection = sqlite3.connect(self.database)
+
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM appsData WHERE nombre = {};".format(appName)
+        cursor.execute(query)
+        appData = cursor.fetchone()
+
+        connection.commit()
+        connection.close()
+        return appData
+
     def getFolio(self):
         """Return the next ticket number."""
         connection = sqlite3.connect(self.database)
@@ -299,6 +328,12 @@ class Db(object):
             query = """INSERT INTO categorias VALUES(3, 'DUMMY', '0, 0, 255', 2);"""
             cursor.execute(query)
 
+        query = """CREATE TABLE IF NOT EXISTS appsData(appID ID INTEGER PRIMARY KEY,
+                    nombre TEXT, logo INT, tarifa FLOAT, telefono TEXT);"""
+        cursor.execute(query)
+
+        query = """INSERT INTO appsData VALUES('appNombre', 'PATH', 'tarifa', 'telefono');"""
+
         query = """CREATE TABLE IF NOT EXISTS configuraciones(descripcion TEXT,
                     valor VARCHAR, tipo INT, grupo INT, categoria TEXT);"""
         cursor.execute(query)
@@ -306,33 +341,33 @@ class Db(object):
         # Placeholders for the data needed for the ticket.
         # FIX the appSessions need to print a different dataset
         if len(tb) == 0:
-            query = """INSERT INTO configuraciones VALUES('imagen_ticket','','link','LOCAL','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('imagen_ticket','','link','LOCAL','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('titulo','','texto','LOCAL','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('titulo','','texto','LOCAL','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('direccion','','texto','LOCAL','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('direccion','','texto','LOCAL','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('regimen_fiscal','','texto','LOCAL','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('regimen_fiscal','','texto','LOCAL','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('RFC','','texto','LOCAL','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('RFC','','texto','LOCAL','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('nombre','','texto','LOCAL','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('nombre','','texto','LOCAL','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('telefono','','texto','LOCAL','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('telefono','','texto','LOCAL','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('imagen_ticket','','link','APP','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('imagen_ticket','','link','APP','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('titulo','','texto','APP','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('titulo','','texto','APP','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('direccion','','texto','APP','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('direccion','','texto','APP','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('regimen_fiscal','','texto','APP','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('regimen_fiscal','','texto','APP','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('RFC','','texto','APP','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('RFC','','texto','APP','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('nombre','','texto','APP','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('nombre','','texto','APP','headerConfig');"""
             cursor.execute(query)
-            query = """INSERT INTO configuraciones VALUES('telefono','','texto','APP','headerConfig')"""
+            query = """INSERT INTO configuraciones VALUES('telefono','','texto','APP','headerConfig');"""
             cursor.execute(query)
 
         connection.commit()

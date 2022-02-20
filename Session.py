@@ -45,8 +45,8 @@ class MultiSession(QWidget):
 
     def createSession(self, appID=None):
         """Create a new session, pass an app name if you want to make it an app session."""
+        print("appID 1=", appID)
         if appID:
-            print("appID =", appID)
             session = AppSession(self, appID)
         else:
             session = Session(self)
@@ -141,8 +141,10 @@ class MultiSession(QWidget):
             self.btnLayout.addWidget(btn)
 
         # This is the button that creates new sessions.
+        dBa = Db()
+        appsData = dBa.getAppsData()
         NewSessionBtn = Buttons.NewSessionBtn(width, height, roundness, color1,
-                                              style, parent=self, obj=self)
+                                              style, parent=self, obj=self, apps=appsData)
 
         # The button that creates new sessions is only added when there are
         # less than 13 sessions on the screen because otherwise they overflow
@@ -323,8 +325,6 @@ class Session(QWidget):
         sexAgeLayout.addStretch()
 
         for category in categories:
-            print("category = ")
-            print(category)
             products = dBa.getProducts(category[1], category[3])
             setattr(self, "menu" + category[1], Menu.Menu(products,
                     category[2], self, hold=self.holder))
@@ -575,7 +575,6 @@ class Session(QWidget):
                 setattr(self, key, value)
 
         db = Db()
-        print("configGroup = ", self.configGroup)
         if not self.configGroup:
             headerConfig = db.getConfigGroup("LOCAL")
         else:
@@ -624,8 +623,8 @@ class AppSession(Session):
 
     def __init__(self, parent, appID, *args, **kwargs):
         self.appID = appID
-        super(AppSession, self).__init__(parent, *args, **kwargs)
         self.configGroup = "APP"
+        super(AppSession, self).__init__(parent, *args, **kwargs)
 
     def initUi(self):
         """Ui is created here.
@@ -777,3 +776,37 @@ class AppSession(Session):
         layout.addLayout(layoutC2)
 
         self.setLayout(layout)
+
+    def printBoth(self, forceBoth=False):
+        """Print simple and complete tickes."""
+        # If the session has no set date the order hasn't been printed
+        # before, so we print both, otherwise we just print the ticket.
+        self.printTicket()
+
+    def printTicket(self, cancelled=False):
+        """Simplified ticket printer."""
+        if self.orderTotal.getTotal() > 0:
+            self.setTime()
+            ticket = Ticket.Ticket(self.collector(), self, cancelled=cancelled, simplified=True)
+            # if ticket.exec_():
+            #     pass
+            printer = Printer.Print()
+            printer.Print(ticket)
+            printer = None
+            ticket.setParent(None)
+            db = Db()
+            db.recordTicket(self.collector())
+            self.parent.deleteSession(self, self.parent.sessionIndex(self))
+
+    def printSimplified(self):
+        """Regular ticket printer."""
+        if self.orderTotal.getTotal() > 0:
+            if self.llevar is not None and self.np is not None:
+                self.setTime()
+                ticket = Ticket.Ticket(self.collector(), self)
+                # if ticket.exec_():
+                #     pass
+                printer = Printer.Print()
+                printer.Print(ticket, simplified=True)
+                printer = None
+                ticket.setParent(None)

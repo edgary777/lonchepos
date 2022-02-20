@@ -22,7 +22,7 @@ class DbIo(QWidget):
 
         db = Db.Db()
         tables = ["tickets", "ticketProducts", "productos", "cupones",
-                  "categorias", "configuraciones"]
+                  "categorias", "configuraciones", "appsData"]
 
         for table in tables:
             with open(fileDir + "/" + str(table) + ".csv", "w", newline="") as newFile:
@@ -37,7 +37,7 @@ class DbIo(QWidget):
     def importDb(self):
         """Import database table from csv file."""
         dataBases = ["categorias", "configuraciones", "productos", "cupones",
-                     "ticketProducts", "tickets"]
+                     "ticketProducts", "tickets", "appsData"]
         caption = "Selecciona la base de datos que quieres actualizar"
         fileName = QFileDialog.getOpenFileName(parent=self, caption=caption,
                                                directory="/",
