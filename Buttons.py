@@ -171,7 +171,7 @@ class SessionBtn(QAbstractButton):
 
     ActiveId = None
 
-    def __init__(self, width, height, rounded, color1, color2, label, style,
+    def __init__(self, width, height, rounded, color1, color2, sessionID, label, style,
                  parent, index=None, obj=None):
         """Init."""
         super().__init__(parent)
@@ -179,6 +179,7 @@ class SessionBtn(QAbstractButton):
         self.widths = width
         self.heights = height
         self.rounded = rounded
+        self.sessionID = sessionID
         self.label = label
         self.index = index
         self.obj = obj

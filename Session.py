@@ -11,6 +11,7 @@ import Ticket
 import Printer
 import datetime
 from Db import Db
+from hashlib import sha256
 
 
 class MultiSession(QWidget):
@@ -129,11 +130,14 @@ class MultiSession(QWidget):
         # create some UI buttons for each of them
         for session in self.sessions:
             indexN = self.sessions.index(session)  # Get the session index
-            sessionN = session.getID()  # Get the session ID (Folio)
+            sessionID = session.getID()  # Get the session ID (Folio)
+            sessionLabel = session.getLabel()
+            print("sessionID=", sessionID)
+            print("sessionLabel=", sessionLabel)
 
             # The button object is created
             btn = Buttons.SessionBtn(width, height, roundness, color1, color2,
-                                     sessionN, style, parent=self, obj=self,
+                                     sessionID, sessionLabel, style, parent=self, obj=self,
                                      index=indexN)
 
             # the button object is added to the layout
@@ -216,11 +220,12 @@ class Session(QWidget):
         self.cancelado = 0
 
         self.configGroup = None
+        if not self.configGroup:
+            self.ID = None
+            self.setID()
+            self.label = self.ID
+            self.initUi()
 
-        self.ID = None
-        self.setID()
-
-        self.initUi()
 
     def initUi(self):
         """Ui is created here.
@@ -545,13 +550,24 @@ class Session(QWidget):
         if not sessions:
             self.ID = db.getFolio() + 1
         else:
-            self.ID = sessions[len(sessions) - 1].getID() + 1
+            looping = True
+            x_iter = 1
+            while looping:
+                if not sessions[len(sessions) - x_iter].getID():
+                    x_iter += 1
+                else:
+                    self.ID = sessions[len(sessions) - (x_iter)].getID() + 1
+                    looping = False
             if self.ID < db.getFolio() + 1:
                 self.ID = db.getFolio() + 1
 
     def getID(self):
         """Return an id for the session."""
         return self.ID
+    
+    def getLabel(self):
+        """Return the session label."""
+        return self.label
 
     def getParent(self):
         """Return the order parent."""
@@ -625,6 +641,9 @@ class AppSession(Session):
         self.appID = appID
         self.configGroup = "APP"
         super(AppSession, self).__init__(parent, *args, **kwargs)
+        self.label = "app"
+        self.ID = self.setID()
+        self.newAppFolio = None
 
     def initUi(self):
         """Ui is created here.
@@ -810,3 +829,39 @@ class AppSession(Session):
                 printer.Print(ticket, simplified=True)
                 printer = None
                 ticket.setParent(None)
+
+    def setID(self):
+        """Set an id for the session."""
+        # I honestly don't know why this is working, it is working on the belief
+        # that getID will return None, but it shouldn't be returning None,
+        # it should be returning the ID.
+        sessions = self.parent.sessions
+        db = Db()
+        if not sessions:
+            folio = db.getFolio() + 1
+        else:
+            looping = True
+            x_iter = 1
+            while looping:
+                if not sessions[len(sessions) - x_iter].getID():
+                    x_iter += 1
+                else:
+                    folio = sessions[len(sessions) - x_iter].getID()
+                    looping = False
+            print("folio", folio)
+            folio = folio + 1
+            if folio < db.getFolio() + 1:
+                folio = db.getFolio() + 1
+        self.setNewAppID(folio, x_iter)
+
+    def setNewAppID(self, folio, x_iter):
+        """Set a different appID for the apps"""
+        self.ID = folio + x_iter
+        newAppID = str(folio + x_iter)
+        if folio < 10:
+            folio = "0" + str(folio - 1)
+        else:
+            folio = str(folio - 1)
+        hashedID = sha256(newAppID.encode()).hexdigest()[:2]
+        newAppID = folio + hashedID
+        self.label = newAppID
