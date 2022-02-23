@@ -300,11 +300,14 @@ class NewSessionBtn(QAbstractButton):
         # self.setFixedSize(self.width, self.height)
 
     def context_menu(self):
+        appsStyle = "QMenu { font-size: 100px; font-weight: bold;}"
         menu = QMenu(self)
+        QStyleOptionMenuItem
         for app in self.apps:
             setattr(self, app[1], QAction(app[1]))
             getattr(self, app[1]).triggered.connect(partial(self.menuActions, app[0]))
             menu.addAction(getattr(self, app[1]))
+        menu.setStyleSheet(appsStyle)
         menu.exec_(QCursor.pos())
 
     def menuActions(self, name):
