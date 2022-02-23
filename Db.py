@@ -15,6 +15,7 @@ class Db(object):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
         folio = data["folio"]
+        appID = data["ID"]
         nombre = "'" + str(data["nombre"]) + "'"
         llevar = data["llevar"]
         pagado = data["pagado"]
@@ -49,7 +50,7 @@ class Db(object):
                                            subtotal, iva, descuento,
                                            descuentop, descuentoa, cupon, paga,
                                            cambio, cancelado, fecha, hora, rfc,
-                                           telefono, email, nombref, uso)
+                                           telefono, email, nombref, uso, appID)
         cursor.execute(query)
 
         for product in productos:
@@ -94,6 +95,21 @@ class Db(object):
         connection.commit()
         connection.close()
         return appData
+
+    def getSingleAppDataByID(self, appID):
+        """Return the product data."""
+        connection = sqlite3.connect(self.database)
+
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM appsData WHERE appID = {};".format(appID)
+        cursor.execute(query)
+        appData = cursor.fetchone()
+
+        connection.commit()
+        connection.close()
+        return appData
+
 
     def getFolio(self):
         """Return the next ticket number."""
@@ -275,7 +291,7 @@ class Db(object):
                     descuentop FLOAT, cupon TEXT, paga INT, cambio INT,
                     cancelado INT, fecha DATE, hora TIME, rfc TEXT,
                     telefono VARCHAR, email VARCHAR, nombref TEXT,
-                    uso TEXT);"""
+                    uso TEXT, appID INT);"""
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS ticketProducts(folio INTEGER,

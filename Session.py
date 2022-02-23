@@ -46,7 +46,6 @@ class MultiSession(QWidget):
 
     def createSession(self, appID=None):
         """Create a new session, pass an app name if you want to make it an app session."""
-        print("appID 1=", appID)
         if appID:
             session = AppSession(self, appID)
         else:
@@ -68,13 +67,13 @@ class MultiSession(QWidget):
             if index > 0:
                 # If the activeSession is not 0 then the previous one in the
                 # index is the one that is selected.
-                self.activeSession = self.sessions[index - 1].getID()
+                self.activeSession = self.sessions[index - 1].getLabel()
             else:
                 # I used try in here because I couldn't think of any other
                 # way to not crash the program when the activeSession is 0
                 # and there are no other sessions.
                 try:
-                    self.activeSession = self.sessions[index + 1].getID()
+                    self.activeSession = self.sessions[index + 1].getLabel()
                 except IndexError:
                     pass  # nothing to be done here, just avoiding a crash
         self.sessions.remove(session)
@@ -85,13 +84,13 @@ class MultiSession(QWidget):
         # the one being deleted had, this is to make deleting sessions less
         # confusing
         for session in self.sessions:
-            if self.activeSession == session.getID():
+            if self.activeSession == session.getLabel():
                 self.switchSession(self.sessions.index(session))
                 break
 
     def switchSession(self, index):
         """Switch session."""
-        self.activeSession = self.sessions[index].getID()
+        self.activeSession = self.sessions[index].getLabel()
         self.UpdateUi()
         self.sessionsLayout.setCurrentIndex(index)
 
@@ -106,8 +105,7 @@ class MultiSession(QWidget):
                 session.printTicket(cancelled=True)
         # if the order is empty, cancel only if it is the last order in the list.
         else:
-            if (len(self.sessions) - 1) == self.sessions.index(session):
-                self.deleteSession(session, self.sessions.index(session))
+            self.deleteSession(session, self.sessions.index(session))
 
     def addEverything(self):
         """Add all Sessions to the layout."""
@@ -132,8 +130,6 @@ class MultiSession(QWidget):
             indexN = self.sessions.index(session)  # Get the session index
             sessionID = session.getID()  # Get the session ID (Folio)
             sessionLabel = session.getLabel()
-            print("sessionID=", sessionID)
-            print("sessionLabel=", sessionLabel)
 
             # The button object is created
             btn = Buttons.SessionBtn(width, height, roundness, color1, color2,
@@ -220,11 +216,10 @@ class Session(QWidget):
         self.cancelado = 0
 
         self.configGroup = None
-        if not self.configGroup:
-            self.ID = None
-            self.setID()
-            self.label = self.ID
-            self.initUi()
+        self.ID = None
+        self.label = None
+        self.setID()
+        self.initUi()
 
 
     def initUi(self):
@@ -552,14 +547,22 @@ class Session(QWidget):
         else:
             looping = True
             x_iter = 1
-            while looping:
-                if not sessions[len(sessions) - x_iter].getID():
-                    x_iter += 1
-                else:
-                    self.ID = sessions[len(sessions) - (x_iter)].getID() + 1
-                    looping = False
+            if sessions[-1].getID() != sessions[-1].getLabel():
+                while looping:
+                    indexTest = len(sessions) - x_iter
+                    if sessions[indexTest].getID() != sessions[indexTest].getLabel():
+                        x_iter += 1
+                    else:
+                        self.ID = sessions[len(sessions) - (x_iter)].getID() + 1
+                        looping = False
+                        break
+            else:
+                base = sessions[-1]
+                self.ID = base.getID() + 1
+
             if self.ID < db.getFolio() + 1:
                 self.ID = db.getFolio() + 1
+        self.label = self.ID
 
     def getID(self):
         """Return an id for the session."""
@@ -604,7 +607,8 @@ class Session(QWidget):
             "RFC": headerConfig["RFC"],
             "nombreFiscal": headerConfig["nombre"],
             "telLocal": headerConfig["telefono"],
-            "folio": self.getID(),
+            "ID": self.getID(),
+            "folio": self.getLabel(),
             "nombre": self.nameField.getText(),
             "llevar": self.Llevar,  # Capitalized because different
             "pagado": self.Np,  # Capitalized because different
@@ -637,13 +641,18 @@ class Session(QWidget):
 class AppSession(Session):
     """Subclass of Session meant to hold all objects pertaining to an app order"""
 
-    def __init__(self, parent, appID, *args, **kwargs):
+    def __init__(self, parent, appID, configGroup="APP", *args, **kwargs):
+        """init
+        
+        For reference, because of "super" all the parent class commands run when "super" runs,
+            if you call them again they'll run again which may lead to unexpected and weird
+            results, so only use functions that are not called on the original INIT.
+        """
         self.appID = appID
-        self.configGroup = "APP"
         super(AppSession, self).__init__(parent, *args, **kwargs)
-        self.label = "app"
-        self.ID = self.setID()
+        self.configGroup = configGroup
         self.newAppFolio = None
+
 
     def initUi(self):
         """Ui is created here.
@@ -843,25 +852,22 @@ class AppSession(Session):
             looping = True
             x_iter = 1
             while looping:
-                if not sessions[len(sessions) - x_iter].getID():
+                if sessions[len(sessions) - x_iter].getID() != sessions[len(sessions) - x_iter].getLabel():
                     x_iter += 1
                 else:
                     folio = sessions[len(sessions) - x_iter].getID()
                     looping = False
-            print("folio", folio)
             folio = folio + 1
             if folio < db.getFolio() + 1:
                 folio = db.getFolio() + 1
-        self.setNewAppID(folio, x_iter)
+        appInitials = db.getSingleAppDataByID(self.appID)[1][0:1]
+        self.setNewAppID(folio, x_iter, appInitials)
 
-    def setNewAppID(self, folio, x_iter):
+    def setNewAppID(self, folio, x_iter, appInitials):
         """Set a different appID for the apps"""
-        self.ID = folio + x_iter
+        self.ID = folio
         newAppID = str(folio + x_iter)
-        if folio < 10:
-            folio = "0" + str(folio - 1)
-        else:
-            folio = str(folio - 1)
-        hashedID = sha256(newAppID.encode()).hexdigest()[:2]
-        newAppID = folio + hashedID
+        folio = str(folio - 1)
+        hashedID = sha256(newAppID.encode()).hexdigest()[:3]
+        newAppID = appInitials + folio + hashedID
         self.label = newAppID
