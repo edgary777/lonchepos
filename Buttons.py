@@ -52,7 +52,9 @@ class MenuBtn(QAbstractButton):
             order = self.holder.getOrder()
             order.addItem(li)
         elif QMouseEvent.button() == Qt.RightButton:
-            pass
+            li = [self.data[1], 1, self.data[2], self.data[3]]
+            order = self.holder.getOrder()
+            order.decreaseItem(li, 1)
 
     def paintEvent(self, event):
         """Paint Event."""

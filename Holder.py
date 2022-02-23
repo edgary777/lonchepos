@@ -123,7 +123,7 @@ class Order(QWidget):
         # We search the list of items already in the order, if the item is
         # already in the order then it is decreased by 'amount', if the
         # operation results is 0 or less than 0 then the item is removed.
-        search = self.searchItem(item[1])
+        search = self.searchItem(item[0])
         if search:
             if search.getQuant() - amount > 0:
                 self.editItem(search, search.getQuant() - amount)
