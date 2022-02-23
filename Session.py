@@ -607,7 +607,7 @@ class Session(QWidget):
             "RFC": headerConfig["RFC"],
             "nombreFiscal": headerConfig["nombre"],
             "telLocal": headerConfig["telefono"],
-            "ID": self.getID(),
+            "label": self.getID(),
             "folio": self.getLabel(),
             "nombre": self.nameField.getText(),
             "llevar": self.Llevar,  # Capitalized because different
@@ -871,3 +871,64 @@ class AppSession(Session):
         hashedID = sha256(newAppID.encode()).hexdigest()[:3]
         newAppID = appInitials + folio + hashedID
         self.label = newAppID
+
+    def collector(self):
+        """Collect and return all data to be recorded on the database."""
+        items = {"factura": self.orderTotal.getInvoice(),
+                 "descuento": self.orderTotal.getDcto()[0],
+                 "descuentop": self.orderTotal.getDcto()[1],
+                 "descuentoa": self.orderTotal.getDcto()[2],
+                 "Np": self.np,
+                 "Llevar": self.llevar}
+
+        for key, value in items.items():
+            if not value or value is False:
+                setattr(self, key, 0)
+            else:
+                if value is True:
+                    value = 1
+                setattr(self, key, value)
+
+        db = Db()
+        if not self.configGroup:
+            headerConfig = db.getConfigGroup("LOCAL")
+        else:
+            headerConfig = db.getConfigGroup(self.configGroup)
+
+        data = {
+            "imagen": headerConfig["imagen_ticket"],
+            "titulo": headerConfig["titulo"],
+            "direccion": headerConfig["direccion"],
+            "regimen": headerConfig["regimen_fiscal"],
+            "RFC": headerConfig["RFC"],
+            "nombreFiscal": headerConfig["nombre"],
+            "telLocal": headerConfig["telefono"],
+            "label": self.getID(),
+            "folio": self.getLabel(),
+            "nombre": self.nameField.getText(),
+            "llevar": self.Llevar,  # Capitalized because different
+            "pagado": self.Np,  # Capitalized because different
+            "sexo": self.getSex(),
+            "edad": self.getAge(),
+            "notas": self.inputField.getText(),
+            "factura": self.factura,
+            "total": self.orderTotal.getTotal(nodcto=True),
+            "subtotal": self.orderTotal.getSubtotal(),
+            "iva": self.orderTotal.getVat(),
+            "descuento": self.descuento,
+            "descuentoa": self.descuentoa,
+            "descuentop": self.descuentop,
+            "cupon": self.orderTotal.getDcto()[3],
+            "paga": self.paga,
+            "cambio": self.cambio,
+            "cancelado": self.cancelado,
+            "productos": self.holder.getOrder().getItems(),
+            "fecha": self.date,
+            "hora": self.hour,
+            "facRfc": self.invoiceRfc,
+            "facTelefono": self.invoiceTel,
+            "facEmail": self.invoiceEmail,
+            "facNombre": self.invoiceName,
+            "facUso": self.invoiceUse
+        }
+        return data

@@ -14,8 +14,8 @@ class Db(object):
         """Add order to database."""
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
-        folio = data["folio"]
-        appID = data["ID"]
+        label = "'" + str(data["label"]) + "'"
+        folio = "'" + str(data["folio"]) + "'"
         nombre = "'" + str(data["nombre"]) + "'"
         llevar = data["llevar"]
         pagado = data["pagado"]
@@ -43,14 +43,18 @@ class Db(object):
 
         productos = data["productos"]
 
-        query = """INSERT INTO tickets VALUES({}, {}, {}, {}, {}, {}, {},
+        if label == folio:
+            table = "tickets"
+        else:
+            table = "appTickets"
+        query = """INSERT INTO {} VALUES({}, {}, {}, {}, {}, {}, {},
                 {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-                {}, {}, {}, {});""".format(folio, nombre, llevar, pagado, sexo,
-                                           edad, notas, factura, total,
-                                           subtotal, iva, descuento,
-                                           descuentop, descuentoa, cupon, paga,
-                                           cambio, cancelado, fecha, hora, rfc,
-                                           telefono, email, nombref, uso, appID)
+                {}, {}, {}, {}, {});""".format(table, folio, nombre, llevar, pagado, sexo,
+                                        edad, notas, factura, total,
+                                        subtotal, iva, descuento,
+                                        descuentop, descuentoa, cupon, paga,
+                                        cambio, cancelado, fecha, hora, rfc,
+                                        telefono, email, nombref, uso, label)
         cursor.execute(query)
 
         for product in productos:
@@ -291,10 +295,20 @@ class Db(object):
                     descuentop FLOAT, cupon TEXT, paga INT, cambio INT,
                     cancelado INT, fecha DATE, hora TIME, rfc TEXT,
                     telefono VARCHAR, email VARCHAR, nombref TEXT,
-                    uso TEXT, appID INT);"""
+                    uso TEXT, label TEXT);"""
         cursor.execute(query)
 
-        query = """CREATE TABLE IF NOT EXISTS ticketProducts(folio INTEGER,
+        query = """CREATE TABLE IF NOT EXISTS appTickets(folio TEXT PRIMARY KEY,
+                    nombre TEXT, llevar INT, pagado INT, sexo INT, edad INT,
+                    notas TEXT, factura INT, total FLOAT, subtotal FLOAT,
+                    iva FLOAT, descuento FLOAT, descuentoa FLOAT,
+                    descuentop FLOAT, cupon TEXT, paga INT, cambio INT,
+                    cancelado INT, fecha DATE, hora TIME, rfc TEXT,
+                    telefono VARCHAR, email VARCHAR, nombref TEXT,
+                    uso TEXT, label TEXT);"""
+        cursor.execute(query)
+
+        query = """CREATE TABLE IF NOT EXISTS ticketProducts(folio TEXT,
          producto TEXT, precio FLOAT, cantidad INT, total INT, categoria INT);"""
         cursor.execute(query)
 
