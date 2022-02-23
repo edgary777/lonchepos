@@ -440,27 +440,29 @@ class Session(QWidget):
 
     def toggleLleva(self):
         """Toggle lleva option."""
-        if self.llevar is None:
-            self.llevar = False
+        if self.orderTotal.getTotal() > 0:
+            if self.llevar is None:
+                self.llevar = False
 
-        if self.llevar is False:
-            self.llevar = True
-            self.llevaBtn.setText("AQUI")
-        else:
-            self.llevar = False
-            self.llevaBtn.setText("LLEVAR")
+            if self.llevar is False:
+                self.llevar = True
+                self.llevaBtn.setText("AQUI")
+            else:
+                self.llevar = False
+                self.llevaBtn.setText("LLEVAR")
 
     def toggleNp(self):
         """Toggle no option."""
-        if self.np is None:
-            self.np = False
+        if self.orderTotal.getTotal() > 0:
+            if self.np is None:
+                self.np = False
 
-        if self.np is False:
-            self.np = True
-            self.npBtn.setText("NP")
-        else:
-            self.np = False
-            self.npBtn.setText("PAG")
+            if self.np is False:
+                self.np = True
+                self.npBtn.setText("NP")
+            else:
+                self.np = False
+                self.npBtn.setText("PAG")
 
     def getSex(self):
         """Return customer sex.
