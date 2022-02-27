@@ -12,6 +12,7 @@ import Printer
 import datetime
 from Db import Db
 from hashlib import sha256
+import inspect
 
 
 class MultiSession(QWidget):
@@ -377,11 +378,19 @@ class Session(QWidget):
         """Image buttons generator and layout creator."""
         names = ["separate", "print", "dcto", "iva", "close", "gear"]
         layout = QVBoxLayout()
+        # Find the file path and split it to a list.
+        filePath = inspect.stack()[0][1].split('\\')
+        # Remove the file from the path to get the directory.
+        del filePath[len(filePath) - 1]
+        # Turn the path into a string again.
+        filePath = "/".join(filePath) + "/Resources/"
+        print("filepath", filePath)
         for name in names:
+            print(filePath + "s-" + name + ".png")
             setattr(self, "picBtn" + name,
-                    Buttons.PicButton("Resources/s-" + name,
-                                      "Resources/h-" + name,
-                                      "Resources/c-" + name, self))
+                    Buttons.PicButton(filePath + "s-" + name + ".png",
+                                      filePath + "h-" + name + ".png",
+                                      filePath + "c-" + name + ".png", self))
             layout.addWidget(getattr(self, "picBtn" + name))
         layout.addStretch()
 
