@@ -11,15 +11,12 @@ import Session
 # The logging will only be used when the file path and python path are the same.
 
 # Find the file path and split it to a list.
-filePath = inspect.stack()[0][1].split('/')
+filePath = inspect.stack()[0][1].split('\\')
 # Remove the file from the path to get the directory.
-del filePath[len(filePath) - 1]
 # Turn the path into a string again.
-filePath = "/".join(filePath)
 
-if os.path.dirname(sys.executable) == filePath:
-
-    logging.basicConfig(filmoveename=os.path.dirname(sys.executable) + '/errors.log',
+if filePath[-3] == "Temp":
+    logging.basicConfig(filename=os.path.dirname(sys.executable) + '/errors.log',
                         level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s %(name)s %(message)s')
     logger = logging.getLogger('mylogger')
@@ -30,14 +27,12 @@ if os.path.dirname(sys.executable) == filePath:
 
     sys.excepthook = my_handler
 
-
 class MainWindow(QWidget):
     """Main window widget."""
 
     def __init__(self):
         """Init."""
         super().__init__()
-
         self.initUi()
 
     def initUi(self):
