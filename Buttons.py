@@ -101,7 +101,7 @@ class StrokeBtn(QAbstractButton):
         self.rounded = rounded
         self.color = QColor(color)
         self.label = label
-        self.index = label
+        self.index = index
         self.obj = obj
 
         # If this is activated the buttons will grow with the screen
