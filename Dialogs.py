@@ -409,7 +409,7 @@ class PayDialog(QDialog):
 
                     self.change.setText(str(round(float(self.payment.text()) - self.total, 2)))
             else:
-                if payment - self.total < 0:
+                if payment - self.total <= 0:
                     self.ok = True
                     self.change.setText(str(round(float(self.payment.text()) - self.total, 2)))
                 else:
