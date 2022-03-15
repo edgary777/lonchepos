@@ -13,6 +13,7 @@ import datetime
 from Db import Db
 from hashlib import sha256
 import inspect
+import random
 
 
 class MultiSession(QWidget):
@@ -877,7 +878,7 @@ class AppSession(Session):
     def setNewAppID(self, folio, x_iter, appInitials):
         """Set a different appID for the apps"""
         self.ID = folio
-        newAppID = str(folio + x_iter)
+        newAppID = str(folio + x_iter + random.random())
         folio = str(folio - 1)
         hashedID = sha256(newAppID.encode()).hexdigest()[:3]
         newAppID = appInitials + folio + hashedID
