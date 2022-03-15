@@ -385,9 +385,7 @@ class Session(QWidget):
         del filePath[len(filePath) - 1]
         # Turn the path into a string again.
         filePath = "/".join(filePath) + "/Resources/"
-        print("filepath", filePath)
         for name in names:
-            print(filePath + "s-" + name + ".png")
             setattr(self, "picBtn" + name,
                     Buttons.PicButton(filePath + "s-" + name + ".png",
                                       filePath + "h-" + name + ".png",
@@ -741,32 +739,39 @@ class AppSession(Session):
         sexAgeLayout = QHBoxLayout()
 
         sexAgeLayout.addStretch()
-        sexM = QRadioButton("M")
-        sexH = QRadioButton("H")
-        self.sexo = QButtonGroup(self)
-        self.sexBtns = [sexM, sexH]
-        z = 0
-        for btn in self.sexBtns:
-            btn.setStyleSheet(tinyStyle)
-            self.sexo.addButton(btn, x)
-            sexAgeLayout.addWidget(btn)
-            z += 1
-
-        sexAgeLayout.addSpacing(20)
-
-        age1 = QRadioButton("1")
-        age2 = QRadioButton("2")
-        age3 = QRadioButton("3")
-        age4 = QRadioButton("4")
-        self.edad = QButtonGroup(self)
-        self.ageBtns = [age1, age2, age3, age4]
-        z = 1
-        for btn in self.ageBtns:
-            btn.setStyleSheet(tinyStyle)
-            self.edad.addButton(btn, x)
-            sexAgeLayout.addWidget(btn)
-            z += 1
+        self.cashBtn = QPushButton("EFECTIVO")
+        self.cashBtn.setCheckable(True)
+        self.cashBtn.setStyleSheet("QPushButton {font-family: Asap; font-weight: bold; font-size: 15px;} QPushButton::checked { background-color: red;}")
+        sexAgeLayout.addWidget(self.cashBtn)
         sexAgeLayout.addStretch()
+
+        # sexAgeLayout.addStretch()
+        # sexM = QRadioButton("Efectivo")
+        # sexH = QRadioButton("H")
+        # self.sexo = QButtonGroup(self)
+        # self.sexBtns = [sexM, sexH]
+        # z = 0
+        # for btn in self.sexBtns:
+        #     btn.setStyleSheet(tinyStyle)
+        #     self.sexo.addButton(btn, x)
+        #     sexAgeLayout.addWidget(btn)
+        #     z += 1
+
+        # sexAgeLayout.addSpacing(20)
+
+        # age1 = QRadioButton("1")
+        # age2 = QRadioButton("2")
+        # age3 = QRadioButton("3")
+        # age4 = QRadioButton("4")
+        # self.edad = QButtonGroup(self)
+        # self.ageBtns = [age1, age2, age3, age4]
+        # z = 1
+        # for btn in self.ageBtns:
+        #     btn.setStyleSheet(tinyStyle)
+        #     self.edad.addButton(btn, x)
+        #     sexAgeLayout.addWidget(btn)
+        #     z += 1
+        # sexAgeLayout.addStretch()
 
         for category in categories:
             products = dBa.getProducts(category[1], category[3])
@@ -884,6 +889,14 @@ class AppSession(Session):
         newAppID = appInitials + folio + hashedID
         self.label = newAppID
 
+    def pay(self):
+        """Print, record, and delete order."""
+        if self.llevar is not None and self.np is not None:
+            dialog = Dialogs.PayDialog(self, self.orderTotal.getTotal(), self.cashBtn.isChecked())
+
+            if dialog.exec_():
+                pass
+
     def collector(self):
         """Collect and return all data to be recorded on the database."""
         items = {"factura": self.orderTotal.getInvoice(),
@@ -920,8 +933,8 @@ class AppSession(Session):
             "nombre": self.nameField.getText(),
             "llevar": self.Llevar,  # Capitalized because different
             "pagado": self.Np,  # Capitalized because different
-            "sexo": self.getSex(),
-            "edad": self.getAge(),
+            "sexo": 0, # not used in here but dont want to modify the database.
+            "edad": 0, # not used in here but dont want to modify the database.
             "notas": self.inputField.getText(),
             "factura": self.factura,
             "total": self.orderTotal.getTotal(nodcto=True),

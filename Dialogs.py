@@ -315,13 +315,14 @@ class PopOrderWidget(QWidget):
 class PayDialog(QDialog):
     """Dialog to accept payment for an order."""
 
-    def __init__(self, parent, total):
+    def __init__(self, parent, total, cash=None):
         """Init."""
         super().__init__(parent, Qt.FramelessWindowHint |
                          Qt.WindowSystemMenuHint)
 
         self.parent = parent
         self.total = total
+        self.cash = cash
 
         self.ok = False
 
@@ -399,13 +400,21 @@ class PayDialog(QDialog):
                 payment = float(payment.text())
             except ValueError:
                 payment = 0
-            if payment - self.total < 0:
-                self.ok = False
-                self.change.setText("ERROR")
-            else:
-                self.ok = True
+            if not self.cash:
+                if payment - self.total < 0:
+                    self.ok = False
+                    self.change.setText("ERROR")
+                else:
+                    self.ok = True
 
-                self.change.setText(str(round(float(self.payment.text()) - self.total, 2)))
+                    self.change.setText(str(round(float(self.payment.text()) - self.total, 2)))
+            else:
+                if payment - self.total < 0:
+                    self.ok = True
+                    self.change.setText(str(round(float(self.payment.text()) - self.total, 2)))
+                else:
+                    self.ok = False
+                    self.change.setText("ERROR")
         else:
             self.ok = False
             self.change.setText("ERROR")
