@@ -643,7 +643,8 @@ class Session(QWidget):
             "facTelefono": self.invoiceTel,
             "facEmail": self.invoiceEmail,
             "facNombre": self.invoiceName,
-            "facUso": self.invoiceUse
+            "facUso": self.invoiceUse,
+            "cashOrder": None
         }
         return data
 
@@ -954,6 +955,7 @@ class AppSession(Session):
             "facTelefono": self.invoiceTel,
             "facEmail": self.invoiceEmail,
             "facNombre": self.invoiceName,
-            "facUso": self.invoiceUse
+            "facUso": self.invoiceUse,
+            "cashOrder": self.cashBtn.isChecked()
         }
         return data

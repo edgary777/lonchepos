@@ -40,6 +40,7 @@ class Db(object):
         email = "'" + str(data["facEmail"]) + "'"
         nombref = "'" + str(data["facNombre"]) + "'"
         uso = "'" + str(data["facUso"]) + "'"
+        cashOrder = 1 if data["cashOrder"] else 0
 
         productos = data["productos"]
 
@@ -47,14 +48,24 @@ class Db(object):
             table = "tickets"
         else:
             table = "appTickets"
-        query = """INSERT INTO {} VALUES({}, {}, {}, {}, {}, {}, {},
-                {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-                {}, {}, {}, {}, {});""".format(table, folio, nombre, llevar, pagado, sexo,
-                                        edad, notas, factura, total,
-                                        subtotal, iva, descuento,
-                                        descuentop, descuentoa, cupon, paga,
-                                        cambio, cancelado, fecha, hora, rfc,
-                                        telefono, email, nombref, uso, label)
+        if label != folio:
+            query = """INSERT INTO {} VALUES({}, {}, {}, {}, {}, {}, {},
+                    {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+                    {}, {}, {}, {}, {}, {});""".format(table, folio, nombre, llevar, pagado, sexo,
+                                            edad, notas, factura, total,
+                                            subtotal, iva, descuento,
+                                            descuentop, descuentoa, cupon, paga,
+                                            cambio, cancelado, fecha, hora, rfc,
+                                            telefono, email, nombref, uso, label, cashOrder)
+        else:
+            query = """INSERT INTO {} VALUES({}, {}, {}, {}, {}, {}, {},
+                    {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+                    {}, {}, {}, {}, {});""".format(table, folio, nombre, llevar, pagado, sexo,
+                                            edad, notas, factura, total,
+                                            subtotal, iva, descuento,
+                                            descuentop, descuentoa, cupon, paga,
+                                            cambio, cancelado, fecha, hora, rfc,
+                                            telefono, email, nombref, uso, label)
         cursor.execute(query)
 
         for product in productos:
@@ -305,7 +316,7 @@ class Db(object):
                     descuentop FLOAT, cupon TEXT, paga INT, cambio INT,
                     cancelado INT, fecha DATE, hora TIME, rfc TEXT,
                     telefono VARCHAR, email VARCHAR, nombref TEXT,
-                    uso TEXT, label TEXT);"""
+                    uso TEXT, label TEXT, cashOrder INT);"""
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS ticketProducts(folio TEXT,
