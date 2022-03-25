@@ -227,14 +227,14 @@ class PopOrderDialog(QDialog):
                     # of it in the original order, we first get a copy of its
                     # attributes and append it to the list of items to be Added
                     # to the new order, and then we delete it.
-                    items.append([item.getName(), quant, item.getPrice()])
+                    items.append([item.getName(), quant, item.getPrice(), item.getCat()])
                     removeItems.append(item)
                 else:
                     # If the item being popped does not result in it being 0
                     # in the original order, then we must modify the original
                     # order item and create a new object with the user selection
                     # in the new order
-                    items.append([item.getName(), quant, item.getPrice()])
+                    items.append([item.getName(), quant, item.getPrice(), item.getCat()])
                     editItems.append([item, item.getQuant() - quant])
         if items:
             session = self.parent.getParent().createSession()
