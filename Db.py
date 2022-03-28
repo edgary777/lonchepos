@@ -144,6 +144,19 @@ class Db(object):
         else:
             return folio[0]
 
+    def verifyFolioApp(self, folio):
+        """Return True if the passed folio exists, False if it doesn't"""
+        connection = sqlite3.connect(self.database)
+
+        cursor = connection.cursor()
+        query = "SELECT folio FROM appTickets WHERE folio = '{}';".format(folio)
+        cursor.execute(query)
+        folio = cursor.fetchall()
+        if folio:
+            return True
+        else:
+            return False
+
     def getProduct(self, product):
         """Return the product data."""
         connection = sqlite3.connect(self.database)

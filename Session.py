@@ -884,11 +884,23 @@ class AppSession(Session):
     def setNewAppID(self, folio, x_iter, appInitials):
         """Set a different appID for the apps"""
         self.ID = folio
+        print(folio, x_iter, appInitials)
         newAppID = str(folio + x_iter + random.random())
-        folio = str(folio - 1)
+        folioStr = str(folio - 1)
         hashedID = sha256(newAppID.encode()).hexdigest()[:3]
-        newAppID = appInitials + folio + hashedID
-        self.label = newAppID
+        newAppID = appInitials + folioStr + hashedID
+        self.verifyAppID(newAppID, folio, x_iter, appInitials)
+
+
+
+    def verifyAppID(self, newAppID, folio, x_iter, appInitials):
+        """Verify the appID is not a duplicate, add random data if it is and return the new appID."""
+        db = Db()
+        if not db.verifyFolioApp(newAppID):
+            self.label = newAppID
+        else:
+            self.setNewAppID(folio, x_iter, appInitials)
+
 
     def pay(self):
         """Print, record, and delete order."""
