@@ -13,6 +13,21 @@ if passVar != password:
 fecha30 = contadorDiasActivos(30)[-1][0]
 fecha91 = contadorDiasActivos(91)[-1][0]
 
+sumaCanceladosHoy = (contadorCancelados(hoy) + contadorCanceladosApps(hoy))
+sumaCanceladosayer = (contadorCancelados(hoy - timedelta(1)) + contadorCanceladosApps(hoy - timedelta(1)))
+
+print("pedidos cancelados hoy = ", sumaCanceladosHoy)
+if sumaCanceladosHoy != 0:
+    print("folios cancelados local: ", foliosCancelados(hoy))
+    print("folios cancelados apps: ", foliosCanceladosApps(hoy))
+print("___________________________________________")
+
+print("pedidos cancelados ayer = ", sumaCanceladosayer)
+if sumaCanceladosayer != 0:
+    print("folios cancelados local: ", foliosCancelados(hoy - timedelta(1)))
+    print("folios cancelados apps: ", foliosCanceladosApps(hoy - timedelta(1)))
+print("___________________________________________")
+
 
 print("VENTA TOTAL HOY =", mergeDailyTotals(0), "(SIN APLICACIONES =", calculadoraTotales(hoy)[0], ")")
 print("VENTA TOTAL AYER =", mergeDailyTotals(1), "(SIN APLICACIONES =", calculadoraTotales(hoy - timedelta(1))[0], ")")
@@ -54,3 +69,5 @@ mergesHoy = [mergeLonches, mergeLonc, mergeBebidas]
 for m in mergesHoy:
     for key in sorted(m):
         print(key, ":", m[key])
+
+input()

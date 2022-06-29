@@ -44,6 +44,30 @@ def calculadoraTotales(timeframe):
     ct = cursor.fetchone()
     return ct
 
+def contadorCancelados(timeframe):
+    query = "SELECT COUNT(folio) FROM tickets WHERE fecha = '{}' AND cancelado = 1".format(timeframe)
+    cursor.execute(query)
+    ct = cursor.fetchone()[0]
+    return ct
+
+def contadorCanceladosApps(timeframe):
+    query = "SELECT COUNT(folio) FROM appTickets WHERE fecha = '{}' AND cancelado = 1".format(timeframe)
+    cursor.execute(query)
+    ct = cursor.fetchone()[0]
+    return ct
+
+def foliosCancelados(timeframe):
+    query = "SELECT folio FROM tickets WHERE fecha = '{}' AND cancelado = 1".format(timeframe)
+    cursor.execute(query)
+    ct = cursor.fetchall()
+    return ct
+
+def foliosCanceladosApps(timeframe):
+    query = "SELECT folio FROM appTickets WHERE fecha = '{}' AND cancelado = 1".format(timeframe)
+    cursor.execute(query)
+    ct = cursor.fetchall()
+    return ct
+
 def ventasEsteMes():
     query = "SELECT COALESCE(SUM(total), 0) FROM tickets WHERE strftime('%m', fecha) = '{}';".format(thisMonth)
     cursor.execute(query)
