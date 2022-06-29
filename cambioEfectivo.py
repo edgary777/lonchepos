@@ -9,6 +9,9 @@ cursor = connection.cursor()
     
 def checkStatus(folio):
     data = fetchData(folio)
+    if data[4][0] != "D":
+        input("EL TICKET NO ES DE DIDI Y NO PUEDE SER PAGO EN EFECTIVO")
+        exit()
     if data[2] == 1 :
         input("EL TICKET ESTA CANCELADO")
         exit()
@@ -18,7 +21,7 @@ def checkStatus(folio):
     return data
 
 def fetchData(folio):
-    query = "SELECT total, hora, cancelado, cashOrder FROM appTickets WHERE folio = '{}';".format(folio)
+    query = "SELECT total, hora, cancelado, cashOrder, folio FROM appTickets WHERE folio = '{}';".format(folio)
     cursor.execute(query)
     data = cursor.fetchall()[0]
     return data
