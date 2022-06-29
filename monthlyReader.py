@@ -2,6 +2,17 @@ from loncheposReader import *
 import csv
 import inspect
 from datetime import date
+from getpass import getpass
+
+password = "ManzanaCanela"
+
+passVar = getpass(prompt="Contraseña:")
+
+if passVar != password:
+    print("Contraseña Incorrecta")
+    input()
+    exit()
+
 
 print("VENTAS TOTALES DEL LOCAL ESTE MES =", ventasEsteMes())
 print("VENTAS TOTALES DE LAS APLICACIONES ESTE MES =", ventasEsteMesApps())
