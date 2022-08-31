@@ -448,7 +448,7 @@ class Session(QWidget):
 
     def toggleLleva(self):
         """Toggle lleva option."""
-        if self.orderTotal.getTotal() > 0:
+        if self.orderTotal.getTotal() > 0 or self.orderTotal.getDcto()[0] > 0:
             if self.llevar is None:
                 self.llevar = False
 
@@ -461,7 +461,7 @@ class Session(QWidget):
 
     def toggleNp(self):
         """Toggle no option."""
-        if self.orderTotal.getTotal() > 0:
+        if self.orderTotal.getTotal() > 0 or self.orderTotal.getDcto()[0] > 0:
             if self.np is None:
                 self.np = False
 
@@ -496,15 +496,17 @@ class Session(QWidget):
         """Print simple and complete tickes."""
         # If the session has no set date the order hasn't been printed
         # before, so we print both, otherwise we just print the ticket.
-        if self.orderTotal.getTotal() == 0:
+        if self.orderTotal.getTotal() == 0 and self.orderTotal.getDcto()[0] == 0:
             self.parent.deleteSession(self, self.parent.sessionIndex(self))
         if not self.date or forceBoth is True:
             self.printSimplified()
+        db = Db()
+        db.updateDiscountCodeCounter(self.orderTotal.getDcto()[3])
         self.printTicket()
 
     def printTicket(self, cancelled=False):
         """Simplified ticket printer."""
-        if self.orderTotal.getTotal() > 0:
+        if self.orderTotal.getTotal() > 0 or self.orderTotal.getDcto()[0] > 0:
             self.setTime()
             ticket = Ticket.Ticket(self.collector(), self, cancelled=cancelled)
             # if ticket.exec_():
@@ -519,7 +521,7 @@ class Session(QWidget):
 
     def printSimplified(self):
         """Simplified ticket printer."""
-        if self.orderTotal.getTotal() > 0:
+        if self.orderTotal.getTotal() > 0 or self.orderTotal.getDcto()[0] > 0:
             if self.llevar is not None and self.np is not None:
                 self.setTime()
                 ticket = Ticket.Ticket(self.collector(), self, simplified=True)
@@ -532,7 +534,7 @@ class Session(QWidget):
 
     def separateItems(self):
         """Toggle and update discount."""
-        if self.orderTotal.getTotal() > 0:
+        if self.orderTotal.getTotal() > 0 or self.orderTotal.getDcto()[0] > 0:
             dialog = Dialogs.PopOrderDialog(self)
 
             if dialog.exec_():
@@ -540,7 +542,7 @@ class Session(QWidget):
 
     def setDcto(self):
         """Toggle and update discount."""
-        if self.orderTotal.getTotal() > 0:
+        if self.orderTotal.getTotal() > 0 or self.orderTotal.getDcto()[0] > 0:
             dcto = self.orderTotal.getDcto()
             dialog = Dialogs.DctDialog(self.orderTotal.getTotal(nodcto=True), parent=self,
                                        percentage=dcto[1], amount=dcto[2],
@@ -827,11 +829,13 @@ class AppSession(Session):
         """Print simple and complete tickes."""
         # If the session has no set date the order hasn't been printed
         # before, so we print both, otherwise we just print the ticket.
+        db = Db()
+        db.updateDiscountCodeCounter(self.orderTotal.getDcto()[3])
         self.printTicket()
 
     def printTicket(self, cancelled=False):
         """Simplified ticket printer."""
-        if self.orderTotal.getTotal() > 0:
+        if self.orderTotal.getTotal() > 0 or self.orderTotal.getDcto()[0] > 0:
             self.setTime()
             ticket = Ticket.Ticket(self.collector(), self, cancelled=cancelled, simplified=True)
             # if ticket.exec_():
@@ -846,7 +850,7 @@ class AppSession(Session):
 
     def printSimplified(self):
         """Regular ticket printer."""
-        if self.orderTotal.getTotal() > 0:
+        if self.orderTotal.getTotal() > 0 or self.orderTotal.getDcto()[0] > 0:
             if self.llevar is not None and self.np is not None:
                 self.setTime()
                 ticket = Ticket.Ticket(self.collector(), self)

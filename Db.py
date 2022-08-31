@@ -82,6 +82,54 @@ class Db(object):
         connection.commit()
         connection.close()
 
+    def getDiscountCodes(self):
+        """Return all the data for all the discount codes."""
+        connection = sqlite3.connect(self.database)
+
+        cursor = connection.cursor()
+
+        query = """SELECT * FROM cupones;"""
+        cursor.execute(query)
+        appsData = cursor.fetchall()
+
+        connection.commit()
+        connection.close()
+
+        return appsData
+
+    def getDiscountCode(self, code):
+        """Return all the data for a single discount code."""
+        connection = sqlite3.connect(self.database)
+
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM cupones WHERE codigo = '{}';".format(code)
+        cursor.execute(query)
+        appsData = cursor.fetchall()
+
+        if appsData:
+            appsData = appsData[0]
+
+        connection.commit()
+        connection.close()
+
+        return appsData
+
+
+    def updateDiscountCodeCounter(self, code):
+        """Increase the counter for the used code by 1."""
+        connection = sqlite3.connect(self.database)
+        
+        cursor = connection.cursor()
+        print(code)
+
+        query = "UPDATE cupones SET usos = usos + 1 WHERE codigo = '{}'".format(code)
+        cursor.execute(query)
+        print(query)
+
+        connection.commit()
+        connection.close()
+
     def getAppsData(self):
         """Return all the data for all the registered apps."""
         connection = sqlite3.connect(self.database)
@@ -124,7 +172,6 @@ class Db(object):
         connection.commit()
         connection.close()
         return appData
-
 
     def getFolio(self):
         """Return the next ticket number."""

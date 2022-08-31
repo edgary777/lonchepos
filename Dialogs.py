@@ -3,7 +3,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 import DbIO
-
+import Db
+from datetime import date, datetime
 
 class DctDialog(QDialog):
     """Pop-Up window to set a discount for an order."""
@@ -19,8 +20,16 @@ class DctDialog(QDialog):
         self.percentage = percentage
         self.amount = amount
         self.code = code
+        self.db = Db.Db()
 
         self.initUi()
+
+        if self.code:
+            self.setCodeDcto(self.code)
+
+        self.percentageInput.setReadOnly(False)
+        self.amountInput.setReadOnly(False)
+        self.codeInput.setReadOnly(False)
 
         self.newTotalUpdate()
 
@@ -88,6 +97,9 @@ class DctDialog(QDialog):
         self.amountInput.textChanged.connect(lambda:
                                              self.setAmountDcto(
                                              self.amountInput.text()))
+        self.codeInput.textChanged.connect(lambda:
+                                             self.setCodeDcto(
+                                             self.codeInput.text()))
 
         layout.addStretch()
         layout.addWidget(self.newTotalLabel)
@@ -98,6 +110,18 @@ class DctDialog(QDialog):
     def setAmountDcto(self, dcto):
         """Set discount amount."""
         try:
+            if len(self.amountInput.text()) > 0:
+                self.percentageInput.clear()
+                self.percentageInput.setReadOnly(True)
+                self.percentage = None
+                self.codeInput.clear()
+                self.codeInput.setReadOnly(True)
+                self.code = None
+            else:
+                self.percentageInput.setReadOnly(False)
+                self.percentage = None
+                self.codeInput.setReadOnly(False)
+                self.code = None
             dcto = int(dcto)
             if dcto and dcto > 0:
                 self.amount = dcto
@@ -111,6 +135,19 @@ class DctDialog(QDialog):
     def setPercentageDcto(self, dcto):
         """Set discount percentage."""
         try:
+            if len(self.percentageInput.text()) > 0:
+                self.amountInput.clear()
+                self.amountInput.setReadOnly(True)
+                self.amount = None
+                self.codeInput.clear()
+                self.codeInput.setReadOnly(True)
+                self.code = None
+            else:
+                self.amountInput.setReadOnly(False)
+                self.amount = None
+                self.codeInput.setReadOnly(False)
+                self.code = None
+
             dcto = int(dcto)
             if dcto and dcto > 0:
                 self.percentage = dcto
@@ -124,21 +161,91 @@ class DctDialog(QDialog):
     def setCodeDcto(self, code):
         """Search and apply a code discount.
 
-        The search returns a list with 2 items, the first item is the type of
-        discount, the second item is the amount of discount.
+        The search returns a list with the coupon data, then we use that data
+        to update the new total.
+        
+        [codigo, tipo, descuento, usos, caducidad, condiciones]
+        if tipo = 0 discount is amount
+        if tipo = 1 discount is percentage
+
+        if caducidad is int, then it has a max number of uses
+        if caducidad is date then it is valid until "currentDate <= caducidad"
         """
-        pass
+        try:
+            if len(self.codeInput.text()) > 0:
+                self.percentageInput.clear()
+                self.percentageInput.setReadOnly(True)
+                self.percentage = None
+                self.amountInput.clear()
+                self.amountInput.setReadOnly(True)
+                self.amount = None
+            else:
+                self.percentageInput.setReadOnly(False)
+                self.percentage = None
+                self.amountInput.setReadOnly(False)
+                self.amount = None
+            print(code)
+            codeDiscount = self.db.getDiscountCode(code)
+            if codeDiscount:
+                print(codeDiscount)
+                print("there is a code!")
+                if codeDiscount[4]:
+                    print("there is a caducity")
+                    if type(codeDiscount[4]) == int:
+                        print("is int")
+                        if codeDiscount[4] <= codeDiscount[3]:
+                            # Ran out of uses, should display a message or something.
+                            print("ran out of uses")
+                            self.setAmountDcto(0)
+                            self.setPercentageDcto(0)
+                            return
+                    else:
+                        print("is not int")
+                        print(datetime.today().date())
+                        print(datetime.strptime(codeDiscount[4], "%Y/%m/%d").date())
+                        if datetime.strptime(codeDiscount[4], "%Y/%m/%d").date() < datetime.today().date():
+                            # Current date is past the caducity, should display a message or something.
+                            print("caducity is expired")
+                            self.setAmountDcto(0)
+                            self.setPercentageDcto(0)
+                            return
+
+                    # if there was no issue then we proceed to calculate the discount using the existing functions.
+                    if codeDiscount[1] == 0:
+                        print("is amount")
+                        self.setAmountDcto(codeDiscount[2])
+                    else:
+                        print("is percentage")
+                        self.setPercentageDcto(codeDiscount[2])
+                    self.code = code
+                else:
+                    self.setAmountDcto(0)
+                    self.setPercentageDcto(0)
+                    print("no caducity, BAD")
+                    # The code has no caducity, that's not good, should display message saying code is unusable.
+                    return
+            else:
+                self.setAmountDcto(0)
+                self.setPercentageDcto(0)
+        except ValueError:
+            self.setAmountDcto(0)
+            self.setPercentageDcto(0)
+            print("ERROR??")
+            self.code = None
+            self.newTotalUpdate()
 
     def newTotalUpdate(self):
         """Update total with new discounts."""
         self.newTotal = self.total
         if self.percentage or self.amount:
-            if self.amount:
+            if self.amount and self.amount > 0:
                 self.newTotal = self.newTotal - self.amount
 
             if self.percentage and self.percentage > 0:
                 self.newTotal = self.newTotal - (self.newTotal *
                                                  (self.percentage / 100))
+        elif self.code != "":
+            pass
         else:
             self.newTotal = self.total
 
@@ -148,9 +255,9 @@ class DctDialog(QDialog):
 
     def returnDcto(self):
         """Update the order with the discount."""
-        if self.newTotal != self.total:
+        if self.newTotal != self.total and self.newTotal >= 0:
             dcto = [None, None, None, None]
-            dcto[0] = 1 - (self.newTotal / self.total)
+            dcto[0] = round(1 - (self.newTotal / self.total), 2)
             dcto[1] = self.percentage
             dcto[2] = self.amount
             dcto[3] = self.code
