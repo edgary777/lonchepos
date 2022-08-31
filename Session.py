@@ -302,13 +302,15 @@ class Session(QWidget):
         self.creditBtn = QPushButton("CREDITO")
         self.creditBtn.setCheckable(True)
         self.creditBtn.setStyleSheet("QPushButton {font-family: Asap; font-weight: bold; font-size: 15px;} QPushButton::checked { background-color: red;}")
-        self.creditBtn.setAutoExclusive(True)
+        # self.creditBtn.setAutoExclusive(True)
         sexAgeLayout.addWidget(self.creditBtn)
+        self.creditBtn.clicked.connect(self.clearCredit)
         self.debitBtn = QPushButton("DEBITO")
         self.debitBtn.setCheckable(True)
         self.debitBtn.setStyleSheet("QPushButton {font-family: Asap; font-weight: bold; font-size: 15px;} QPushButton::checked { background-color: red;}")
-        self.debitBtn.setAutoExclusive(True)
+        # self.debitBtn.setAutoExclusive(True)
         sexAgeLayout.addWidget(self.debitBtn)
+        self.debitBtn.clicked.connect(self.clearDebit)
         sexAgeLayout.addStretch()
 
         # sexM = QRadioButton("M")
@@ -386,6 +388,16 @@ class Session(QWidget):
         layout.addLayout(layoutC2)
 
         self.setLayout(layout)
+
+    def clearDebit(self):
+        """Clear both buttons when debit is clicked and it is checked."""
+        if self.debitBtn.isChecked():
+            self.creditBtn.setChecked(False)
+
+    def clearCredit(self):
+        """Clear both buttons when debit is clicked and it is checked."""
+        if self.creditBtn.isChecked():
+            self.debitBtn.setChecked(False)
 
     def imgBtns(self):
         """Image buttons generator and layout creator."""
