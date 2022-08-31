@@ -4,17 +4,19 @@ import inspect
 from datetime import date
 from getpass import getpass
 
-password = "ManzanaCanela"
+# password = "ManzanaCanela"
 
-passVar = getpass(prompt="Contraseña:")
+# passVar = getpass(prompt="Contraseña:")
 
-if passVar != password:
-    print("Contraseña Incorrecta")
-    input()
-    exit()
+# if passVar != password:
+#     print("Contraseña Incorrecta")
+#     input()
+#     exit()
 
 
 print("VENTAS TOTALES DEL LOCAL ESTE MES =", ventasEsteMes())
+print("hex= ", hex(int(ventasEsteMes())))
+print("int from hex = ", int(hex(int(ventasEsteMes())), 16))
 print("VENTAS TOTALES DE LAS APLICACIONES ESTE MES =", ventasEsteMesApps())
 print("___________________________________________")
 
@@ -61,3 +63,5 @@ def exportDb():
                 wr.writerow([item[0], item[1]])
 
 exportDb()
+
+input()
