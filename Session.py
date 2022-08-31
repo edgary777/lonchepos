@@ -299,32 +299,44 @@ class Session(QWidget):
         sexAgeLayout = QHBoxLayout()
 
         sexAgeLayout.addStretch()
-        sexM = QRadioButton("M")
-        sexH = QRadioButton("H")
-        self.sexo = QButtonGroup(self)
-        self.sexBtns = [sexM, sexH]
-        z = 0
-        for btn in self.sexBtns:
-            btn.setStyleSheet(tinyStyle)
-            self.sexo.addButton(btn, x)
-            sexAgeLayout.addWidget(btn)
-            z += 1
-
-        sexAgeLayout.addSpacing(20)
-
-        age1 = QRadioButton("1")
-        age2 = QRadioButton("2")
-        age3 = QRadioButton("3")
-        age4 = QRadioButton("4")
-        self.edad = QButtonGroup(self)
-        self.ageBtns = [age1, age2, age3, age4]
-        z = 1
-        for btn in self.ageBtns:
-            btn.setStyleSheet(tinyStyle)
-            self.edad.addButton(btn, x)
-            sexAgeLayout.addWidget(btn)
-            z += 1
+        self.creditBtn = QPushButton("CREDITO")
+        self.creditBtn.setCheckable(True)
+        self.creditBtn.setStyleSheet("QPushButton {font-family: Asap; font-weight: bold; font-size: 15px;} QPushButton::checked { background-color: red;}")
+        self.creditBtn.setAutoExclusive(True)
+        sexAgeLayout.addWidget(self.creditBtn)
+        self.debitBtn = QPushButton("DEBITO")
+        self.debitBtn.setCheckable(True)
+        self.debitBtn.setStyleSheet("QPushButton {font-family: Asap; font-weight: bold; font-size: 15px;} QPushButton::checked { background-color: red;}")
+        self.debitBtn.setAutoExclusive(True)
+        sexAgeLayout.addWidget(self.debitBtn)
         sexAgeLayout.addStretch()
+
+        # sexM = QRadioButton("M")
+        # sexH = QRadioButton("H")
+        # self.sexo = QButtonGroup(self)
+        # self.sexBtns = [sexM, sexH]
+        # z = 0
+        # for btn in self.sexBtns:
+        #     btn.setStyleSheet(tinyStyle)
+        #     self.sexo.addButton(btn, x)
+        #     sexAgeLayout.addWidget(btn)
+        #     z += 1
+
+        # sexAgeLayout.addSpacing(20)
+
+        # age1 = QRadioButton("1")
+        # age2 = QRadioButton("2")
+        # age3 = QRadioButton("3")
+        # age4 = QRadioButton("4")
+        # self.edad = QButtonGroup(self)
+        # self.ageBtns = [age1, age2, age3, age4]
+        # z = 1
+        # for btn in self.ageBtns:
+        #     btn.setStyleSheet(tinyStyle)
+        #     self.edad.addButton(btn, x)
+        #     sexAgeLayout.addWidget(btn)
+        #     z += 1
+        # sexAgeLayout.addStretch()
 
         for category in categories:
             products = dBa.getProducts(category[1], category[3])
@@ -624,8 +636,8 @@ class Session(QWidget):
             "nombre": self.nameField.getText(),
             "llevar": self.Llevar,  # Capitalized because different
             "pagado": self.Np,  # Capitalized because different
-            "sexo": self.getSex(),
-            "edad": self.getAge(),
+            "sexo": 0,
+            "edad": 0,
             "notas": self.inputField.getText(),
             "factura": self.factura,
             "total": self.orderTotal.getTotal(nodcto=True),
@@ -646,7 +658,9 @@ class Session(QWidget):
             "facEmail": self.invoiceEmail,
             "facNombre": self.invoiceName,
             "facUso": self.invoiceUse,
-            "cashOrder": None
+            "cashOrder": None,
+            "credit": self.creditBtn.isChecked(),
+            "debit": self.debitBtn.isChecked()
         }
         return data
 
@@ -972,6 +986,8 @@ class AppSession(Session):
             "facEmail": self.invoiceEmail,
             "facNombre": self.invoiceName,
             "facUso": self.invoiceUse,
-            "cashOrder": self.cashBtn.isChecked()
+            "cashOrder": self.cashBtn.isChecked(),
+            "credit": None,
+            "debit": None
         }
         return data

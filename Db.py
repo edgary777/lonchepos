@@ -41,6 +41,8 @@ class Db(object):
         nombref = "'" + str(data["facNombre"]) + "'"
         uso = "'" + str(data["facUso"]) + "'"
         cashOrder = 1 if data["cashOrder"] else 0
+        credit = 1 if data["credit"] else 0
+        debit = 1 if data["debit"] else 0
 
         productos = data["productos"]
 
@@ -60,12 +62,12 @@ class Db(object):
         else:
             query = """INSERT INTO {} VALUES({}, {}, {}, {}, {}, {}, {},
                     {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-                    {}, {}, {}, {}, {});""".format(table, folio, nombre, llevar, pagado, sexo,
+                    {}, {}, {}, {}, {}, {}, {});""".format(table, folio, nombre, llevar, pagado, sexo,
                                             edad, notas, factura, total,
                                             subtotal, iva, descuento,
                                             descuentop, descuentoa, cupon, paga,
                                             cambio, cancelado, fecha, hora, rfc,
-                                            telefono, email, nombref, uso, label)
+                                            telefono, email, nombref, uso, label, credit, debit)
         cursor.execute(query)
 
         for product in productos:
@@ -366,7 +368,7 @@ class Db(object):
                     descuentop FLOAT, cupon TEXT, paga INT, cambio INT,
                     cancelado INT, fecha DATE, hora TIME, rfc TEXT,
                     telefono VARCHAR, email VARCHAR, nombref TEXT,
-                    uso TEXT, label TEXT);"""
+                    uso TEXT, label TEXT, credit INT, debit INT);"""
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS appTickets(folio TEXT PRIMARY KEY,
