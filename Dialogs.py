@@ -257,7 +257,7 @@ class DctDialog(QDialog):
         """Update the order with the discount."""
         if self.newTotal != self.total and self.newTotal >= 0:
             dcto = [None, None, None, None]
-            dcto[0] = round(1 - (self.newTotal / self.total), 2)
+            dcto[0] = round(1 - (self.newTotal / self.total), 5)
             dcto[1] = self.percentage
             dcto[2] = self.amount
             dcto[3] = self.code
