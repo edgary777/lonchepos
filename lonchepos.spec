@@ -7,7 +7,7 @@ block_cipher = pyi_crypto.PyiBlockCipher(key='w0QBJE6jG1VdhOyz')
 a = Analysis(['main.py'],
              pathex=[],
              binaries=[],
-             datas=[('C:\\Users\\edgar\\Documents\\projects\\lonchepos\\Resources', 'Resources')],
+             datas=[('C:\\Users\\kotako\\Documents\\projects\\lonchepos\\Resources', 'Resources')],
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},
