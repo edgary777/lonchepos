@@ -206,6 +206,19 @@ class Db(object):
         else:
             return False
 
+    def getRandomProductByPrice(self, price):
+        """Return a random product with that price."""
+        connection = sqlite3.connect(self.database)
+        cursor = connection.cursor()
+
+        query ="SELECT producto, nombreCategoria, tipoCategoria FROM productos WHERE precio = {} AND tipoCategoria = 0 ORDER BY RANDOM() LIMIT 1".format(price)
+        cursor.execute(query)
+        product = cursor.fetchone()
+
+        connection.commit()
+        connection.close()
+        return product
+
     def getProduct(self, product):
         """Return the product data."""
         connection = sqlite3.connect(self.database)
@@ -319,6 +332,33 @@ class Db(object):
         connection.close()
 
         return items
+
+    def getOrdersByDate(self, date):
+        """Return all orders from the date provided."""
+        connection = sqlite3.connect(self.database)
+        cursor = connection.cursor()
+        print(date)
+        query = "SELECT * FROM tickets WHERE fecha = '{}';".format(date)
+        print(query)
+
+        cursor.execute(query)
+        orders = cursor.fetchall()
+        print("ORDERS ", orders)
+
+        return orders
+
+    def updateTicketHour(self, folio, hour):
+        """Modify the hour of a given ticket folio with a given hour."""
+        connection = sqlite3.connect(self.database)
+        cursor = connection.cursor()
+
+        query = "UPDATE tickets SET hora = '{}' WHERE folio = '{}';".format(hour, folio)
+        print(query)
+        cursor.execute(query)
+
+        connection.commit()
+        connection.close()
+
 
     def overwriteTable(self, table, data):
         """Clean table and fil with new data."""
