@@ -586,10 +586,10 @@ class Session(QWidget):
             if sessions[-1].getID() != sessions[-1].getLabel():
                 while looping:
                     indexTest = len(sessions) - x_iter
-                    if sessions[indexTest].getID() != sessions[indexTest].getLabel():
+                    if sessions[indexTest].getID() == sessions[indexTest].getLabel():
                         x_iter += 1
                     else:
-                        self.ID = sessions[len(sessions) - (x_iter)].getID() + 1
+                        self.ID = sessions[len(sessions) - (x_iter)].getID()
                         looping = False
                         break
             else:
