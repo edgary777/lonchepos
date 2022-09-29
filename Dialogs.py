@@ -1,3 +1,4 @@
+from distutils.log import error
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -37,7 +38,7 @@ class DctDialog(QDialog):
 
     def initUi(self):
         """UI setup."""
-        styleInputs = """QLineEdit {
+        self.styleInputs = """QLineEdit {
                      border-radius: 20%;
                      padding-left: 10px;
                      font-family: Asap;
@@ -45,16 +46,30 @@ class DctDialog(QDialog):
                      font-size: 25pt;
                      }"""
 
-        styleLabels = """QLabel {
+        self.styleLabels = """QLabel {
                      font-family: Asap;
                      font-weight: bold;
                      font-size: 25pt;
                      color: white;
                      }"""
 
+        self.greenLabels = """QLabel {
+                     font-family: Asap;
+                     font-weight: bold;
+                     font-size: 25pt;
+                     color: #6eFF6e;
+                     }"""
+
+        self.redLabels = """QLabel {
+                     font-family: Asap;
+                     font-weight: bold;
+                     font-size: 25pt;
+                     color: #ff0000;
+                     }"""
+
         self.newTotalLabel = QLabel("$" + str(self.total))
         self.newTotalLabel.setAlignment(Qt.AlignCenter)
-        self.newTotalLabel.setStyleSheet(styleLabels)
+        self.newTotalLabel.setStyleSheet(self.styleLabels)
         btnOk = QPushButton("Aceptar")
         btnOk.clicked.connect(self.returnDcto)
         btnCancel = QPushButton("Cancelar")
@@ -73,11 +88,11 @@ class DctDialog(QDialog):
         for key, value in items.items():
             setattr(self, key + "Input", QLineEdit())
             # getattr(self, key + "Input").setFixedWidth(150)
-            getattr(self, key + "Input").setStyleSheet(styleInputs)
+            getattr(self, key + "Input").setStyleSheet(self.styleInputs)
             if getattr(self, key):
                 getattr(self, key + "Input").setText(str(getattr(self, key)))
             setattr(self, key + "Label", QLabel(value))
-            getattr(self, key + "Label").setStyleSheet(styleLabels)
+            getattr(self, key + "Label").setStyleSheet(self.styleLabels)
             getattr(self, key + "Label").setAlignment(Qt.AlignRight)
             inputsLayout.addWidget(getattr(self, key + "Label"), x, 0)
             inputsLayout.addWidget(getattr(self, key + "Input"), x, 1)
@@ -180,62 +195,65 @@ class DctDialog(QDialog):
                 self.amountInput.setReadOnly(True)
                 self.amount = None
             else:
+                self.newTotalLabel.setStyleSheet(self.styleLabels)
                 self.percentageInput.setReadOnly(False)
                 self.percentage = None
                 self.amountInput.setReadOnly(False)
                 self.amount = None
-            print(code)
+                return
             codeDiscount = self.db.getDiscountCode(code)
             if codeDiscount:
-                print(codeDiscount)
-                print("there is a code!")
+                self.newTotalLabel.setStyleSheet(self.greenLabels)
                 if codeDiscount[4]:
-                    print("there is a caducity")
                     if type(codeDiscount[4]) == int:
-                        print("is int")
                         if codeDiscount[4] <= codeDiscount[3]:
                             # Ran out of uses, should display a message or something.
-                            print("ran out of uses")
                             self.setAmountDcto(0)
                             self.setPercentageDcto(0)
+                            self.newTotalLabel.setStyleSheet(self.redLabels)
+                            self.newTotalUpdate(errorMessage="usos agotados")
                             return
                     else:
-                        print("is not int")
                         print(datetime.today().date())
                         print(datetime.strptime(codeDiscount[4], "%Y/%m/%d").date())
                         if datetime.strptime(codeDiscount[4], "%Y/%m/%d").date() < datetime.today().date():
                             # Current date is past the caducity, should display a message or something.
-                            print("caducity is expired")
                             self.setAmountDcto(0)
                             self.setPercentageDcto(0)
+                            self.newTotalLabel.setStyleSheet(self.redLabels)
+                            self.newTotalUpdate(errorMessage="expiro")
                             return
 
                     # if there was no issue then we proceed to calculate the discount using the existing functions.
                     if codeDiscount[1] == 0:
-                        print("is amount")
                         self.setAmountDcto(codeDiscount[2])
                     else:
-                        print("is percentage")
                         self.setPercentageDcto(codeDiscount[2])
                     self.code = code
                 else:
                     self.setAmountDcto(0)
                     self.setPercentageDcto(0)
-                    print("no caducity, BAD")
+                    self.newTotalLabel.setStyleSheet(self.redLabels)
+                    self.newTotalUpdate(errorMessage="error codigo")
                     # The code has no caducity, that's not good, should display message saying code is unusable.
                     return
             else:
+                self.newTotalLabel.setStyleSheet(self.redLabels)
                 self.setAmountDcto(0)
                 self.setPercentageDcto(0)
         except ValueError:
             self.setAmountDcto(0)
             self.setPercentageDcto(0)
-            print("ERROR??")
+            self.newTotalLabel.setStyleSheet(self.redLabels)
             self.code = None
-            self.newTotalUpdate()
+            self.newTotalUpdate(errorMessage="ERROR???")
+            # self.newTotalUpdate()
 
-    def newTotalUpdate(self):
+    def newTotalUpdate(self, errorMessage=None):
         """Update total with new discounts."""
+        if errorMessage:
+            self.newTotalLabel.setText(errorMessage)
+            return
         self.newTotal = self.total
         if self.percentage or self.amount:
             if self.amount and self.amount > 0:
