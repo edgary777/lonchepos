@@ -914,9 +914,9 @@ class AppSession(Session):
     def setNewAppID(self, folio, x_iter, appInitials):
         """Set a different appID for the apps"""
         self.ID = folio
-        print(folio, x_iter, appInitials)
+        # print(folio, x_iter, appInitials)
         newAppID = str(folio + x_iter + random.random())
-        folioStr = str(folio - 1)
+        folioStr = str(folio - 1)[-1:]
         hashedID = sha256(newAppID.encode()).hexdigest()[:3]
         newAppID = appInitials + folioStr + hashedID
         self.verifyAppID(newAppID, folio, x_iter, appInitials)
