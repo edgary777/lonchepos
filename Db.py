@@ -62,7 +62,7 @@ class Db(object):
                   {folio}, {nombre}, {llevar}, {pagado}, {sexo}, {edad}, {notas}, {factura}, {total}, {subtotal}, {iva}, {descuento},
                   {descuentoa}, {descuentop}, {cupon},{paga}, {cambio}, {cancelado}, {fecha}, {hora}, {rfc}, {telefono}, {email}, {nombref}, {uso},
                   {label}, {credit}, {debit});"""
-
+        cursor.execute(query)
         for product in productos:
             tNombre = "'" + str(product.getName()) + "'"
             tPrecio = product.getPrice()
