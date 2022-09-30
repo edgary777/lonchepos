@@ -1,3 +1,4 @@
+"""Graphics for the ticket to be printed."""
 import sys
 import textwrap
 from PyQt5.QtWidgets import *

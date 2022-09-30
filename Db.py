@@ -1,3 +1,5 @@
+"""Databes methods and communication."""
+
 import sqlite3
 
 
@@ -51,24 +53,15 @@ class Db(object):
         else:
             table = "appTickets"
         if label != folio:
-            query = """INSERT INTO {} VALUES({}, {}, {}, {}, {}, {}, {},
-                    {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-                    {}, {}, {}, {}, {}, {});""".format(table, folio, nombre, llevar, pagado, sexo,
-                                            edad, notas, factura, total,
-                                            subtotal, iva, descuento,
-                                            descuentop, descuentoa, cupon, paga,
-                                            cambio, cancelado, fecha, hora, rfc,
-                                            telefono, email, nombref, uso, label, cashOrder)
+            query = f"""INSERT INTO {table} VALUES(
+                  {folio}, {nombre}, {llevar}, {pagado}, {sexo}, {edad}, {notas}, {factura}, {total}, {subtotal}, {iva}, {descuento},
+                  {descuentoa}, {descuentop}, {cupon}, {paga}, {cambio}, {cancelado}, {fecha}, {hora}, {rfc}, {telefono}, {email}, {nombref}, {uso},
+                  {label}, {cashOrder});"""
         else:
-            query = """INSERT INTO {} VALUES({}, {}, {}, {}, {}, {}, {},
-                    {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-                    {}, {}, {}, {}, {}, {}, {});""".format(table, folio, nombre, llevar, pagado, sexo,
-                                            edad, notas, factura, total,
-                                            subtotal, iva, descuento,
-                                            descuentop, descuentoa, cupon, paga,
-                                            cambio, cancelado, fecha, hora, rfc,
-                                            telefono, email, nombref, uso, label, credit, debit)
-        cursor.execute(query)
+            query = f"""INSERT INTO {table} VALUES(
+                  {folio}, {nombre}, {llevar}, {pagado}, {sexo}, {edad}, {notas}, {factura}, {total}, {subtotal}, {iva}, {descuento},
+                  {descuentoa}, {descuentop}, {cupon},{paga}, {cambio}, {cancelado}, {fecha}, {hora}, {rfc}, {telefono}, {email}, {nombref}, {uso},
+                  {label}, {credit}, {debit});"""
 
         for product in productos:
             tNombre = "'" + str(product.getName()) + "'"
@@ -77,8 +70,9 @@ class Db(object):
             tTotal = product.getTotal()
             tCategoria = product.getCat()
 
-            query = """INSERT INTO ticketProducts VALUES({}, {}, {}, {},
-            {}, '{}');""".format(folio, tNombre, tPrecio, tCantidad, tTotal, tCategoria)
+            query = f"""INSERT INTO ticketProducts VALUES({folio}, {tNombre}, {tPrecio},
+                                                          {tCantidad}, {tTotal},
+                                                          '{tCategoria}');"""
             cursor.execute(query)
 
         connection.commit()
@@ -105,7 +99,7 @@ class Db(object):
 
         cursor = connection.cursor()
 
-        query = "SELECT * FROM cupones WHERE codigo = '{}';".format(code)
+        query = f"SELECT * FROM cupones WHERE codigo = '{code}';"
         cursor.execute(query)
         appsData = cursor.fetchall()
 
@@ -117,15 +111,14 @@ class Db(object):
 
         return appsData
 
-
     def updateDiscountCodeCounter(self, code):
         """Increase the counter for the used code by 1."""
         connection = sqlite3.connect(self.database)
-        
+
         cursor = connection.cursor()
         print(code)
 
-        query = "UPDATE cupones SET usos = usos + 1 WHERE codigo = '{}'".format(code)
+        query = f"UPDATE cupones SET usos = usos + 1 WHERE codigo = '{code}'"
         cursor.execute(query)
         print(query)
 
@@ -153,7 +146,7 @@ class Db(object):
 
         cursor = connection.cursor()
 
-        query = "SELECT * FROM appsData WHERE nombre = {};".format(appName)
+        query = f"SELECT * FROM appsData WHERE nombre = {appName};"
         cursor.execute(query)
         appData = cursor.fetchone()
 
@@ -167,7 +160,7 @@ class Db(object):
 
         cursor = connection.cursor()
 
-        query = "SELECT * FROM appsData WHERE appID = {};".format(appID)
+        query = f"SELECT * FROM appsData WHERE appID = {appID};"
         cursor.execute(query)
         appData = cursor.fetchone()
 
@@ -194,11 +187,11 @@ class Db(object):
             return folio[0]
 
     def verifyFolioApp(self, folio):
-        """Return True if the passed folio exists, False if it doesn't"""
+        """Return True if the passed folio exists, False if it doesn't."""
         connection = sqlite3.connect(self.database)
 
         cursor = connection.cursor()
-        query = "SELECT folio FROM appTickets WHERE folio = '{}';".format(folio)
+        query = f"SELECT folio FROM appTickets WHERE folio = '{folio}';"
         cursor.execute(query)
         folio = cursor.fetchall()
         if folio:
@@ -211,7 +204,8 @@ class Db(object):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
 
-        query ="SELECT producto, nombreCategoria, tipoCategoria FROM productos WHERE precio = {} AND tipoCategoria = 0 ORDER BY RANDOM() LIMIT 1".format(price)
+        query = """SELECT producto, nombreCategoria, tipoCategoria FROM productos WHERE
+              precio = {price} AND tipoCategoria = 0 ORDER BY RANDOM() LIMIT 1;"""
         cursor.execute(query)
         product = cursor.fetchone()
 
@@ -225,7 +219,7 @@ class Db(object):
 
         cursor = connection.cursor()
 
-        query = "SELECT * FROM tickets WHERE id = {};".format(product)
+        query = f"SELECT * FROM tickets WHERE id = {product};"
         cursor.execute(query)
         product = cursor.fetchone()
 
@@ -241,7 +235,8 @@ class Db(object):
 
         catNombre = "'" + catNombre + "'"  # formatting category for sql query
 
-        query = "SELECT * FROM productos WHERE nombreCategoria = {} AND tipoCategoria = '{}';".format(catNombre, catTipo)
+        query = f"""SELECT * FROM productos WHERE
+                    nombreCategoria = {catNombre} AND tipoCategoria = '{catTipo}';"""
         cursor.execute(query)
         products = cursor.fetchall()
 
@@ -270,14 +265,14 @@ class Db(object):
         Return a list of categories and their color.
 
             The 'category' attribute is an INT other than 0.
-            
+
             * made as an alt function to avoid modifying all existent code
         """
         connection = sqlite3.connect(self.database)
 
         cursor = connection.cursor()
 
-        query = "SELECT * FROM categorias WHERE categoria='{}';".format(category)
+        query = f"SELECT * FROM categorias WHERE categoria='{category}';"
         cursor.execute(query)
         category = cursor.fetchall()
 
@@ -291,7 +286,7 @@ class Db(object):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
 
-        query = """SELECT * FROM {};""".format(table)
+        query = f"SELECT * FROM {table};"
         cursor.execute(query)
         items = cursor.fetchall()
 
@@ -305,8 +300,7 @@ class Db(object):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
 
-        query = """SELECT * FROM configuraciones WHERE grupo='{}';""".format(
-            str(group))
+        query = f"SELECT * FROM configuraciones WHERE grupo='{str(group)}';"
         cursor.execute(query)
         items = cursor.fetchall()
 
@@ -324,7 +318,7 @@ class Db(object):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
 
-        query = """PRAGMA table_info({});""".format(table)
+        query = f"PRAGMA table_info({table});"
         cursor.execute(query)
         items = cursor.fetchall()
 
@@ -338,13 +332,14 @@ class Db(object):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
         print(date)
-        query = "SELECT * FROM tickets WHERE fecha = '{}';".format(date)
+        query = f"SELECT * FROM tickets WHERE fecha = '{date}';"
         print(query)
 
         cursor.execute(query)
         orders = cursor.fetchall()
         print("ORDERS ", orders)
 
+        connection.close()
         return orders
 
     def updateTicketHour(self, folio, hour):
@@ -352,20 +347,36 @@ class Db(object):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
 
-        query = "UPDATE tickets SET hora = '{}' WHERE folio = '{}';".format(hour, folio)
+        query = f"UPDATE tickets SET hora = '{hour}' WHERE folio = '{folio}';"
         print(query)
         cursor.execute(query)
 
         connection.commit()
         connection.close()
 
+    def getOrdersByRange(self, dateStart, dateEnd):
+        """Return all orders from between the range of dates provided."""
+        connection = sqlite3.connect(self.database)
+        cursor = connection.cursor()
+        query = f"SELECT * FROM tickets WHERE fecha >= '{dateStart}' AND fecha <= {dateEnd};"
+        cursor.execute(query)
+
+        orders = cursor.fetchall()
+        connection.close()
+        return orders
+
+    def getPercentageOrdersBeverage(self):
+        """Return the percentage of orders with a beverage."""
+        connection = sqlite3.connect(self.database)
+        cursor = connection.cursor()
+        query = "SELECT COUNT("
 
     def overwriteTable(self, table, data):
         """Clean table and fil with new data."""
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
 
-        query = "DELETE FROM {}".format(table)
+        query = f"DELETE FROM {table}"
         cursor.execute(query)
 
         del data[0]
@@ -390,7 +401,7 @@ class Db(object):
             if len(row) > 1:
                 for val in range((len(row) - 1)):
                     valstr += ", ?"
-            query = "INSERT INTO {} VALUES({});".format(table, valstr)
+            query = f"INSERT INTO {table} VALUES({valstr});"
             cursor.execute(query, row)
 
         connection.commit()
@@ -435,17 +446,21 @@ class Db(object):
         tb = cursor.fetchall()
 
         if len(tb) == 0:
-            query = """INSERT INTO productos('producto', 'precio', 'nombreCategoria', 'tipoCategoria')
-                       VALUES ('DUMMY', '10', 'DUMMY', 0);"""
+            query = """INSERT INTO productos('producto', 'precio',
+                  'nombreCategoria', 'tipoCategoria') VALUES ('DUMMY', '10',
+                  'DUMMY', 0);"""
             cursor.execute(query)
-            query = """INSERT INTO productos('producto', 'precio', 'nombreCategoria', 'tipoCategoria')
-                       VALUES ('DUMMY', '11', 'DUMMY2', 0);"""
+            query = """INSERT INTO productos('producto', 'precio',
+                  'nombreCategoria', 'tipoCategoria') VALUES ('DUMMY', '11',
+                  'DUMMY2', 0);"""
             cursor.execute(query)
-            query = """INSERT INTO productos('producto', 'precio', 'nombreCategoria', 'tipoCategoria')
-                       VALUES ('DUMMY', '12', 'DUMMY', 1);"""
+            query = """INSERT INTO productos('producto', 'precio',
+                       'nombreCategoria', 'tipoCategoria') VALUES ('DUMMY',
+                       '12', 'DUMMY', 1);"""
             cursor.execute(query)
-            query = """INSERT INTO productos('producto', 'precio', 'nombreCategoria', 'tipoCategoria')
-                       VALUES ('DUMMY', '13', 'DUMMY', 2);"""
+            query = """INSERT INTO productos('producto', 'precio',
+                  'nombreCategoria', 'tipoCategoria') VALUES ('DUMMY', '13',
+                  'DUMMY', 2);"""
             cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS cupones(codigo TEXT PRIMARY KEY,

@@ -1,3 +1,4 @@
+"""Widget to write order specifications."""
 from PyQt5.QtWidgets import QTextEdit, QVBoxLayout, QWidget, QSizePolicy, QLineEdit
 from PyQt5.QtCore import QSize
 

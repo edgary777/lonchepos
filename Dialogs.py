@@ -1,3 +1,4 @@
+"""Containts the pop-up dailogs GUI and functionality."""
 from distutils.log import error
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *

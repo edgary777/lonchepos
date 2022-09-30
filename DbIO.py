@@ -16,9 +16,9 @@ class DbIo(QWidget):
         """Export the database tables to CSV files."""
         caption = "Selecciona en donde guardar la base de datos"
         fileDir = QFileDialog.getExistingDirectory(parent=self, caption=caption,
-                               directory="/",
-                               options=QFileDialog.ShowDirsOnly |
-                               QFileDialog.DontResolveSymlinks)
+                                                   directory="/",
+                                                   options=QFileDialog.ShowDirsOnly |
+                                                   QFileDialog.DontResolveSymlinks)
 
         db = Db.Db()
         tables = ["tickets", "ticketProducts", "productos", "cupones",

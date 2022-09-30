@@ -1,3 +1,4 @@
+"""Plugin to modify the data of a printed app ticket to a cash order."""
 import sqlite3
 from datetime import date, timedelta
 
@@ -8,6 +9,7 @@ connection = sqlite3.connect(database)
 cursor = connection.cursor()
     
 def checkStatus(folio):
+    """Check if the ticket is already set to cash order."""
     data = fetchData(folio)
     if data[4][0] != "D":
         input("EL TICKET NO ES DE DIDI Y NO PUEDE SER PAGO EN EFECTIVO")
@@ -21,12 +23,14 @@ def checkStatus(folio):
     return data
 
 def fetchData(folio):
+    """Get the ticket Data."""
     query = "SELECT total, hora, cancelado, cashOrder, folio FROM appTickets WHERE folio = '{}';".format(folio)
     cursor.execute(query)
     data = cursor.fetchall()[0]
     return data
 
 def askCash(total):
+    """Query for a payment."""
     respuesta = float(input("CUANTO PAGO EL REPARTIDOR? "))
     if respuesta <= total:
         result = float(total) - respuesta

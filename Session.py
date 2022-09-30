@@ -1,3 +1,8 @@
+"""Main GUI.
+
+MultiSession allows having multiple orders open at the same time.
+Session and AppSession are the main GUI where all other widgets appear.
+"""
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -678,10 +683,10 @@ class Session(QWidget):
 
 
 class AppSession(Session):
-    """Subclass of Session meant to hold all objects pertaining to an app order"""
+    """Subclass of Session meant to hold all objects pertaining to an app order."""
 
     def __init__(self, parent, appID, configGroup="APP", *args, **kwargs):
-        """init
+        """init.
         
         For reference, because of "super" all the parent class commands run when "super" runs,
             if you call them again they'll run again which may lead to unexpected and weird
@@ -912,7 +917,7 @@ class AppSession(Session):
         self.setNewAppID(folio, x_iter, appInitials)
 
     def setNewAppID(self, folio, x_iter, appInitials):
-        """Set a different appID for the apps"""
+        """Set a different appID for the apps."""
         self.ID = folio
         # print(folio, x_iter, appInitials)
         newAppID = str(folio + x_iter + random.random())

@@ -1,3 +1,4 @@
+"""Paper printer functions."""
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtPrintSupport import *

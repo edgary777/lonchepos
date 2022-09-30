@@ -1,3 +1,4 @@
+"""GUI placement for the order data."""
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -304,7 +305,7 @@ class Item(QWidget):
         self.category = data[3]
 
     def getCat(self):
-        """placeholder"""
+        """Return the item category."""
         return self.category
 
     def editQuant(self, new):

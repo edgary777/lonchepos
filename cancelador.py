@@ -1,3 +1,4 @@
+"""Plugin to cancel a ticket."""
 import sqlite3
 from datetime import date, timedelta
 
@@ -8,6 +9,7 @@ connection = sqlite3.connect(database)
 cursor = connection.cursor()
     
 def checkStatus(folio):
+    """Check the status of a given ticket."""
     data = fetchData(folio)
     if data[2] == 1:
         input("EL TICKET YA FUE CANCELADO")
@@ -15,12 +17,14 @@ def checkStatus(folio):
     return data
 
 def fetchData(folio):
+    """Return the data of the given ticket."""
     query = "SELECT total, hora, cancelado FROM tickets WHERE folio = '{}';".format(folio)
     cursor.execute(query)
     data = cursor.fetchall()[0]
     return data
 
 def checkStatusApp(folio):
+    """Check the status of a given ticket if it's from an app sale."""
     data = fetchDataApp(folio)
     if data[2] == 1:
         input("EL TICKET YA FUE CANCELADO")
@@ -28,17 +32,20 @@ def checkStatusApp(folio):
     return data
 
 def fetchDataApp(folio):
+    """Get the data of the given ticket if it's from an app sale."""
     query = "SELECT total, hora, cancelado FROM appTickets WHERE folio = '{}';".format(folio)
     cursor.execute(query)
     data = cursor.fetchall()[0]
     return data
 
 def cancelarFolio(folio):
+    """Cancel the given ticket."""
     query = "UPDATE tickets SET cancelado = '1' WHERE folio = '{}'".format(folio)
     cursor.execute(query)
     connection.commit()
 
 def cancelarFolioApp(folio):
+    """Cancel the given ticket if it's from an app sale."""
     query = "UPDATE appTickets SET cancelado = '1' WHERE folio = '{}'".format(folio)
     cursor.execute(query)
     connection.commit()

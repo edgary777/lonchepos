@@ -1,3 +1,4 @@
+"""Main file."""
 import sys
 import os
 import atexit

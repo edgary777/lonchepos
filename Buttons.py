@@ -1,3 +1,4 @@
+"""Module containing the buttons GUI and functionality."""
 from cgitb import text
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -302,6 +303,7 @@ class NewSessionBtn(QAbstractButton):
         # self.setFixedSize(self.width, self.height)
 
     def context_menu(self):
+        """Show a context menu with a selection of available apps."""
         appsStyle = "QMenu { font-size: 100px; font-weight: bold;}"
         menu = QMenu(self)
         QStyleOptionMenuItem
@@ -313,7 +315,7 @@ class NewSessionBtn(QAbstractButton):
         menu.exec_(QCursor.pos())
 
     def menuActions(self, name):
-        """perform an action when the context menu buttons are clicked."""
+        """Perform an action when the context menu buttons are clicked."""
         self.obj.createSession(name)
 
     def paintEvent(self, event):
