@@ -219,7 +219,7 @@ class Db(object):
 
         cursor = connection.cursor()
 
-        query = f"SELECT * FROM tickets WHERE id = {product};"
+        query = f"SELECT * FROM productos WHERE id = {product};"
         cursor.execute(query)
         product = cursor.fetchone()
 
